@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¿Es correcto...?</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+JP:wght@300;400&display=swap" rel="stylesheet">
+<style>
+/* ════════════════════ BASE ════════════════════ */
+:root {
+  --bg: #0a0a0a;
+  --text: #e8e8e8;
+  --sidebar-w: 134px;
+  --cell: 145px;
+  --gap: 8px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Cormorant Garamond', serif;
+  overflow-x: hidden;
+}
+
+/* ════════════════════ CURSOR TIP ════════════════════ */
+#cursor-tip {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  background: rgba(8,8,8,0.94);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #fff;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 0.86rem;
+  padding: 5px 12px;
+  display: none;
+  letter-spacing: 0.04em;
+  max-width: 300px;
+  white-space: normal;
+  line-height: 1.4;
+}
+
+/* ════════════════════ NAVBAR ════════════════════ */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1.8rem 0 calc(var(--sidebar-w) + 1.5rem);
+  height: 50px;
+  background: rgba(10,10,10,0.97);
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+  backdrop-filter: blur(6px);
+}
+.nav-logo {
+  font-size: 1.05rem;
+  font-style: italic;
+  letter-spacing: 0.06em;
+  color: #fff;
+  cursor: pointer;
+  user-select: none;
+  transition: opacity 0.2s;
+}
+.nav-logo:hover { opacity: 0.6; }
+.nav-links { display: flex; gap: 2rem; }
+.nav-links a {
+  color: rgba(255,255,255,0.62);
+  text-decoration: none;
+  font-size: 0.81rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: #fff; }
+
+/* ════════════════════ SIDEBAR — FIXED ════════════════════ */
+#sidebar {
+  position: fixed;
+  top: 50px;
+  left: 0;
+  bottom: 0;
+  width: var(--sidebar-w);
+  z-index: 800;
+  background: rgba(10,10,10,0.97);
+  border-right: 1px solid rgba(255,255,255,0.11);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 0.9rem 0.55rem 1rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+/* scrollbar in sidebar */
+#sidebar::-webkit-scrollbar { width: 3px; }
+#sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); }
+
+/* Language selector */
+.lang-selector {
+  border: 1px solid rgba(255,255,255,0.28);
+  display: flex;
+  align-items: center;
+  gap: 0.32rem;
+  cursor: pointer;
+  background: transparent;
+  padding: 0.38rem 0.45rem;
+  margin-bottom: 0.85rem;
+  user-select: none;
+  position: relative;
+  transition: border-color 0.2s;
+}
+.lang-selector:hover { border-color: rgba(255,255,255,0.7); }
+.lang-selector .flag { width: 20px; height: 13px; object-fit: cover; flex-shrink: 0; }
+.lang-selector .lang-code { font-size: 0.76rem; letter-spacing: 0.08em; flex: 1; }
+.lang-selector .arrow { font-size: 0.52rem; color: rgba(255,255,255,0.45); }
+.lang-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%; left: -1px; right: -1px;
+  background: rgba(12,12,12,0.99);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-top: none;
+  z-index: 900;
+}
+.lang-dropdown.open { display: block; }
+.lang-option {
+  display: flex;
+  align-items: center;
+  gap: 0.32rem;
+  padding: 0.32rem 0.45rem;
+  font-size: 0.74rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.lang-option:hover { background: rgba(255,255,255,0.07); }
+
+/* Sidebar buttons */
+.sb-spacer { height: 0.52rem; }
+.sb-btn {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  color: rgba(255,255,255,0.7);
+  border: 1px solid rgba(255,255,255,0.22);
+  margin-bottom: -1px;
+  padding: 0.4rem 0.3rem;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, border-color 0.18s;
+}
+.sb-btn:hover { background: rgba(255,255,255,0.08); color: #fff; border-color: rgba(255,255,255,0.6); }
+
+/* ════════════════════ MAIN CONTENT ════════════════════ */
+#main-content {
+  margin-left: var(--sidebar-w);
+  padding-top: 50px;
+}
+
+/* ════════════════════ SECTIONS ════════════════════ */
+section {
+  min-height: 100vh;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+/* ════════════════════ NOVELAS ════════════════════ */
+#novelas {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#novelas-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 0.65s;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ════════════════════ DIAMOND GRID ════════════════════ */
+.grid-wrapper { position: relative; z-index: 1; }
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, var(--cell));
+  grid-template-rows: repeat(3, var(--cell));
+  gap: var(--gap);
+  transform: rotate(45deg);
+}
+
+/* Center logo */
+.logo-central {
+  grid-column: 2;
+  grid-row: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(-45deg);
+  z-index: 1;
+  cursor: pointer;
+  transition: opacity 0.25s;
+}
+.logo-central:hover { opacity: 0.7; }
+.logo-central img {
+  max-width: 88%;
+  max-height: 88%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 8px rgba(255,255,255,0.2));
+}
+.logo-central .logo-text {
+  font-style: italic;
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.45);
+  text-align: center;
+  line-height: 1.45;
+  transition: color 0.2s;
+}
+.logo-central:hover .logo-text { color: rgba(255,255,255,0.85); }
+
+/* Diamond cell */
+.rombo {
+  width: var(--cell);
+  height: var(--cell);
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  border: 2px solid rgba(255,255,255,0.3);
+  transition: border-color 0.2s;
+  z-index: 2;
+  text-decoration: none;
+}
+
+/* Cover image (counter-rotated so it looks straight) */
+.rombo .r-cover {
+  position: absolute;
+  width: 145%;
+  height: 145%;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) rotate(-45deg);
+  background: #1a1a1a center / cover no-repeat;
+  opacity: 0.38;
+  transition: opacity 0.3s;
+}
+
+/* Hover overlay */
+.rombo .r-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.25s;
+  z-index: 3;
+}
+.rombo .r-overlay-inner {
+  transform: rotate(-45deg);
+  text-align: center;
+  background: rgba(0,0,0,0.65);
+  padding: 7px 5px;
+  max-width: 128px;
+}
+.rombo .r-title {
+  font-size: 0.47rem;
+  font-style: italic;
+  color: #fff;
+  line-height: 1.3;
+  margin-bottom: 4px;
+}
+.rombo .r-badge {
+  display: inline-block;
+  font-size: 0.43rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 1px solid rgba(255,255,255,0.55);
+  color: rgba(255,255,255,0.82);
+  padding: 1px 5px;
+  margin-bottom: 3px;
+}
+.rombo .r-pages {
+  font-size: 0.41rem;
+  color: rgba(255,255,255,0.58);
+}
+
+.rombo:hover .r-cover { opacity: 0.88; }
+.rombo:hover .r-overlay { opacity: 1; }
+
+/* Outline colours */
+.oc-white  { border-color: rgba(255,255,255,0.32); }
+.oc-blue   { border-color: rgba(70,120,230,0.38); }
+.oc-green  { border-color: rgba(65,195,105,0.38); }
+.oc-orange { border-color: rgba(230,135,45,0.38); }
+.oc-purple { border-color: rgba(155,70,220,0.38); }
+.oc-gray   { border-color: rgba(155,155,155,0.38); }
+.oc-red    { border-color: rgba(220,50,50,0.38); }
+.oc-rainbow{ border-color: rgba(255,255,255,0.38); }
+
+.oc-white:hover  { border-color: rgba(255,255,255,0.95); }
+.oc-blue:hover   { border-color: rgba(70,120,230,0.95); }
+.oc-green:hover  { border-color: rgba(65,195,105,0.95); }
+.oc-orange:hover { border-color: rgba(230,135,45,0.95); }
+.oc-purple:hover { border-color: rgba(155,70,220,0.95); }
+.oc-gray:hover   { border-color: rgba(195,195,195,0.95); }
+.oc-red:hover    { border-color: rgba(220,50,50,0.95); }
+
+@keyframes rainbowBorder {
+  0%   { border-color: rgba(255,255,255,0.92); }
+  14%  { border-color: rgba(70,120,230,0.92); }
+  28%  { border-color: rgba(65,195,105,0.92); }
+  42%  { border-color: rgba(230,135,45,0.92); }
+  57%  { border-color: rgba(155,70,220,0.92); }
+  71%  { border-color: rgba(195,195,195,0.92); }
+  85%  { border-color: rgba(220,50,50,0.92); }
+  100% { border-color: rgba(255,255,255,0.92); }
+}
+.oc-rainbow:hover { animation: rainbowBorder 3s linear infinite; }
+
+/* Grid position classes */
+/* Visual layout after 45° rotation:
+     (col1,row1)=upper-left    (col2,row1)=TOP       (col3,row1)=upper-right
+     (col1,row2)=LEFT          (col2,row2)=LOGO       (col3,row2)=RIGHT
+     (col1,row3)=lower-left    (col2,row3)=BOTTOM     (col3,row3)=lower-right
+*/
+.gc-1-1 { grid-column:1; grid-row:1; }   /* upper-left  */
+.gc-2-1 { grid-column:2; grid-row:1; }   /* top         */
+.gc-3-1 { grid-column:3; grid-row:1; }   /* upper-right */
+.gc-1-2 { grid-column:1; grid-row:2; }   /* left        */
+.gc-3-2 { grid-column:3; grid-row:2; }   /* right       */
+.gc-1-3 { grid-column:1; grid-row:3; }   /* lower-left  */
+.gc-2-3 { grid-column:2; grid-row:3; }   /* bottom      */
+.gc-3-3 { grid-column:3; grid-row:3; }   /* lower-right */
+
+/* ════════════════════ MODAL ════════════════════ */
+#modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.88);
+  z-index: 3000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+#modal-overlay.open { display: flex; }
+.modal-box {
+  background: #0f0f0f;
+  border: 1px solid rgba(255,255,255,0.2);
+  max-width: 800px;
+  width: 100%;
+  max-height: 88vh;
+  overflow-y: auto;
+  padding: 2.5rem;
+  position: relative;
+  display: flex;
+  gap: 2rem;
+}
+.modal-close {
+  position: absolute;
+  top: 1rem; right: 1.2rem;
+  font-size: 1.3rem;
+  cursor: pointer;
+  color: rgba(255,255,255,0.4);
+  line-height: 1;
+  transition: color 0.2s;
+}
+.modal-close:hover { color: #fff; }
+.modal-left  { flex: 1; min-width: 0; }
+.modal-right { width: 265px; flex-shrink: 0; }
+.modal-title  { font-size: 1.52rem; font-style: italic; line-height: 1.25; margin-bottom: 0.4rem; }
+.modal-slogan {
+  font-size: 0.87rem; font-style: italic;
+  color: rgba(255,255,255,0.48);
+  border-left: 2px solid rgba(255,255,255,0.16);
+  padding-left: 0.7rem;
+  margin-bottom: 0.9rem;
+  line-height: 1.55;
+}
+.modal-meta {
+  display: flex; gap: 1rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.74rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: rgba(255,255,255,0.58);
+}
+.modal-badge { border: 1px solid rgba(255,255,255,0.38); padding: 2px 8px; color: rgba(255,255,255,0.78); }
+.modal-genres { font-size: 0.74rem; color: rgba(255,255,255,0.38); margin-bottom: 1rem; letter-spacing: 0.06em; }
+.modal-synopsis { font-size: 0.96rem; line-height: 1.78; color: rgba(255,255,255,0.8); }
+.modal-yt-placeholder {
+  width: 100%; aspect-ratio: 16/9;
+  background: #0d0d0d;
+  border: 1px solid rgba(255,255,255,0.09);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 0.45rem; color: rgba(255,255,255,0.25); font-size: 0.76rem; text-align: center;
+}
+.modal-youtube { width: 100%; aspect-ratio: 16/9; border: 1px solid rgba(255,255,255,0.1); }
+.modal-youtube iframe { width: 100%; height: 100%; border: none; display: block; }
+
+/* ════════════════════ OTHER SECTIONS ════════════════════ */
+.section-inner { padding: 3rem 2.5rem; }
+.sec-title { font-size: 1.7rem; font-style: italic; letter-spacing: 0.07em; margin-bottom: 0.35rem; }
+.sec-subtitle { font-size: 0.86rem; font-style: italic; color: rgba(255,255,255,0.42); margin-bottom: 2rem; }
+
+.extras-grid { display: flex; flex-wrap: wrap; gap: 0.9rem; }
+.extra-item {
+  width: 155px; height: 155px;
+  border: 1px solid rgba(255,255,255,0.25);
+  background: #111;
+  cursor: pointer; overflow: hidden;
+  transition: border-color 0.2s;
+  text-decoration: none;
+  display: flex; align-items: center; justify-content: center;
+  color: rgba(255,255,255,0.18); font-size: 0.68rem; letter-spacing: 0.1em;
+  position: relative;
+}
+.extra-item img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.6; transition: opacity 0.2s; }
+.extra-item:hover { border-color: rgba(255,255,255,0.85); }
+.extra-item:hover img { opacity: 1; }
+
+.cred-block-title {
+  font-size: 0.88rem; letter-spacing: 0.13em; text-transform: uppercase;
+  text-decoration: underline; text-underline-offset: 4px;
+  color: rgba(255,255,255,0.68); margin-bottom: 1rem;
+}
+.collab-grid { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 2.2rem; }
+.collab-item {
+  width: 112px; height: 112px;
+  border: 1px solid rgba(255,255,255,0.22); background: #111;
+  cursor: pointer; overflow: hidden; transition: border-color 0.2s;
+  text-decoration: none; display: flex; align-items: center; justify-content: center;
+  color: rgba(255,255,255,0.16); font-size: 0.62rem; letter-spacing: 0.08em;
+  position: relative;
+}
+.collab-item img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.6; transition: opacity 0.2s; }
+.collab-item:hover { border-color: rgba(255,255,255,0.8); }
+.collab-item:hover img { opacity: 1; }
+
+.sobre-text {
+  font-size: 1rem; line-height: 1.85;
+  color: rgba(255,255,255,0.65); font-style: italic; max-width: 680px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #0a0a0a; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); }
+</style>
+</head>
+<body>
+
+<!-- Cursor tip -->
+<div id="cursor-tip"></div>
+
+<!-- Audio (replace src with your .mp3 paths) -->
+<audio id="sfx-hover" src="hover.mp3" preload="auto"></audio>
+<audio id="music-1"  src="music1.mp3"  preload="none" loop></audio>
+<audio id="music-2"  src="music2.mp3"  preload="none" loop></audio>
+<audio id="music-3"  src="music3.mp3"  preload="none" loop></audio>
+<audio id="music-4"  src="music4.mp3"  preload="none" loop></audio>
+<audio id="music-5"  src="music5.mp3"  preload="none" loop></audio>
+<audio id="music-6"  src="music6.mp3"  preload="none" loop></audio>
+<audio id="music-7"  src="music7.mp3"  preload="none" loop></audio>
+<audio id="music-8"  src="music8.mp3"  preload="none" loop></audio>
+
+<!-- ════════ NAVBAR ════════ -->
+<nav>
+  <div class="nav-logo hov-sfx" onclick="goTo('novelas')">¿Es correcto...?</div>
+  <div class="nav-links">
+    <a class="hov-sfx" onclick="goTo('novelas')">
+      <span class="t-es">Novelas</span><span class="t-en">Novels</span><span class="t-ja">小説</span>
+    </a>
+    <a class="hov-sfx" onclick="goTo('extras')">
+      <span class="t-es">Extras</span><span class="t-en">Extras</span><span class="t-ja">エクストラ</span>
+    </a>
+    <a class="hov-sfx" onclick="goTo('creditos')">
+      <span class="t-es">Créditos</span><span class="t-en">Credits</span><span class="t-ja">クレジット</span>
+    </a>
+    <a class="hov-sfx" onclick="goTo('sobre-mi')">
+      <span class="t-es">Sobre mí</span><span class="t-en">About me</span><span class="t-ja">私について</span>
+    </a>
+  </div>
+</nav>
+
+<!-- ════════ SIDEBAR — FIXED ════════ -->
+<div id="sidebar">
+  <div class="lang-selector hov-sfx" id="langSelector">
+    <img class="flag" id="flagImg" src="flag-es.png" alt="ES">
+    <span class="lang-code" id="langCode">ESP</span>
+    <span class="arrow">▼</span>
+    <div class="lang-dropdown" id="langDropdown">
+      <div class="lang-option hov-sfx" onclick="setLang('es')">
+        <img class="flag" src="flag-es.png" alt="ES"> ESP
+      </div>
+      <div class="lang-option hov-sfx" onclick="setLang('en')">
+        <img class="flag" src="flag-en.png" alt="EN"> ENG
+      </div>
+      <div class="lang-option hov-sfx" onclick="setLang('ja')">
+        <img class="flag" src="flag-ja.png" alt="JA"> JPN
+      </div>
+    </div>
+  </div>
+
+  <a class="sb-btn hov-sfx" href="https://ko-fi.com/TU_USUARIO" target="_blank">Ko-fi</a>
+  <a class="sb-btn hov-sfx" href="https://amazon.com/TU_PAGINA" target="_blank">Amazon</a>
+  <div class="sb-spacer"></div>
+  <a class="sb-btn hov-sfx" href="https://youtube.com/TU_CANAL" target="_blank">Youtube</a>
+  <a class="sb-btn hov-sfx" href="https://x.com/TU_USUARIO" target="_blank">X</a>
+  <a class="sb-btn hov-sfx" href="mailto:tu@email.com">
+    <span class="t-es">Contacta aquí</span><span class="t-en">Contact here</span><span class="t-ja">お問い合わせ</span>
+  </a>
+  <div class="sb-spacer"></div>
+  <a class="sb-btn hov-sfx" href="#" target="_blank">
+    <span class="t-es">Música</span><span class="t-en">Music</span><span class="t-ja">音楽</span>
+  </a>
+  <a class="sb-btn hov-sfx" href="https://pixiv.net/TU_USUARIO" target="_blank">Pixiv Fanart</a>
+</div>
+
+<!-- ════════ MAIN CONTENT ════════ -->
+<div id="main-content">
+
+  <!-- NOVELAS -->
+  <section id="novelas">
+    <div id="novelas-bg"></div>
+    <div class="grid-wrapper">
+      <div class="grid-container" id="gridContainer">
+        <!--
+          VISUAL LAYOUT after 45° rotation:
+          ┌──────┬──────┬──────┐
+          │  N1  │  N8  │  N7  │  row 1
+          ├──────┼──────┼──────┤
+          │  N2  │ LOGO │  N6  │  row 2
+          ├──────┼──────┼──────┤
+          │  N3  │  N4  │  N5  │  row 3
+          └──────┴──────┴──────┘
+          col:   1      2      3
+        -->
+        <!-- Logo at center — JS inserts diamonds before this -->
+        <div class="logo-central hov-sfx" id="centerLogo"
+             style="grid-column:2;grid-row:2"
+             onclick="window.open('https://ko-fi.com/TU_USUARIO','_blank')">
+          <!-- Reemplaza por: <img src="logo.png" alt="Logo"> -->
+          <div class="logo-text">¿Es<br>correcto…?</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXTRAS -->
+  <section id="extras">
+    <div class="section-inner">
+      <h2 class="sec-title" data-i18n='{"es":"Extras","en":"Extras","ja":"エクストラ"}'></h2>
+      <div class="extras-grid">
+        <a class="extra-item hov-sfx" href="#" target="_blank">Extra 1</a>
+        <a class="extra-item hov-sfx" href="#" target="_blank">Extra 2</a>
+        <a class="extra-item hov-sfx" href="#" target="_blank">Extra 3</a>
+        <a class="extra-item hov-sfx" href="#" target="_blank">Extra 4</a>
+        <a class="extra-item hov-sfx" href="#" target="_blank">Extra 5</a>
+        <a class="extra-item hov-sfx" href="#" target="_blank">Extra 6</a>
+        <a class="extra-item hov-sfx" href="#" target="_blank">Extra 7</a>
+        <a class="extra-item hov-sfx" href="#" target="_blank">Extra 8</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CRÉDITOS -->
+  <section id="creditos">
+    <div class="section-inner">
+      <h2 class="sec-title" data-i18n='{"es":"Créditos","en":"Credits","ja":"クレジット"}'></h2>
+      <p class="sec-subtitle" data-i18n='{"es":"Gracias a todos los que me prestaron su ayuda","en":"Thank you to everyone who helped me","ja":"助けてくれた皆さんに感謝します"}'></p>
+      <p class="cred-block-title" data-i18n='{"es":"Actores de voz","en":"Voice Actors","ja":"声優"}'></p>
+      <div class="collab-grid" id="voiceGrid"></div>
+      <p class="cred-block-title" data-i18n='{"es":"Compositores","en":"Composers","ja":"作曲家"}'></p>
+      <div class="collab-grid" id="composerGrid"></div>
+      <p class="cred-block-title" data-i18n='{"es":"Artistas","en":"Artists","ja":"アーティスト"}'></p>
+      <div class="collab-grid" id="artistGrid"></div>
+    </div>
+  </section>
+
+  <!-- SOBRE MÍ -->
+  <section id="sobre-mi">
+    <div class="section-inner">
+      <h2 class="sec-title" data-i18n='{"es":"Sobre Lekim-sama","en":"About Lekim-sama","ja":"Lekim-samaについて"}'></h2>
+      <p class="sobre-text" data-i18n='{"es":"Escribe aquí cosas sobre ti.","en":"Write things about yourself here.","ja":"ここに自分のことを書いてください。"}'></p>
+    </div>
+  </section>
+
+</div><!-- /main-content -->
+
+<!-- MODAL -->
+<div id="modal-overlay" onclick="overlayClick(event)">
+  <div class="modal-box">
+    <span class="modal-close hov-sfx" onclick="closeModal()">✕</span>
+    <div class="modal-left">
+      <h2 class="modal-title"   id="m-title"></h2>
+      <p  class="modal-slogan"  id="m-slogan"></p>
+      <div class="modal-meta">
+        <span class="modal-badge" id="m-badge"></span>
+        <span id="m-pages"></span>
+      </div>
+      <p class="modal-genres"   id="m-genres"></p>
+      <p class="modal-synopsis" id="m-synopsis"></p>
+    </div>
+    <div class="modal-right">
+      <div id="m-yt"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════
+   NOVEL DATA - POSICIONES EXACTAS
+   Ajustado según tu esquema de coordenadas
+══════════════════════════════════════ */
+const NOVELS = [
+  /* 1 - PICO SUPERIOR - gc-1-2 - BLANCO */
+  {
+    gridClass: 'gc-1-2', outline: 'white', musicId: 'music-1',
+    cover: 'portada_infelicidad.jpg',
+    title:  { es:'¿Es correcto la infelicidad?', en:'Is unhappiness correct?', ja:'不幸は正しいのか？' },
+    slogan: { es:'Lo que debe existir, está; lo que no, también.', en:'What must exist, does; what must not, also does.', ja:'存在すべきものはある；そうでないもの भी。' },
+    free:   { es:'Gratis', en:'Free', ja:'無料' },
+    pages:  { es:'1 página', en:'1 page', ja:'1ページ' },
+    synopsis:{ es:'Novela corta de fantasía y misterio.', en:'Short fantasy/mystery novel.', ja:'ファンタジーとミステリーの短編小説。' },
+    link: { es:'#', en:'#', ja:'#' }
+  },
+  /* 2 - ESQUINA SUPERIOR DERECHA - gc-1-3 - AZUL */
+  {
+    gridClass: 'gc-1-3', outline: 'blue', musicId: 'music-2',
+    cover: 'portada_verdad.jpg',
+    title:  { es:'¿Es correcto buscar la verdad?', en:'Is it correct to seek the truth?', ja:'真実を求めることは正しいのか？' },
+    slogan: { es:'Buscando la verdad, acepté mi mentira.', en:'Seeking the truth, I accepted my lie.', ja:'真実を求めて、私は自分の嘘を受け入れた。' },
+    free:   { es:'Pago', en:'Paid', ja:'有料' },
+    pages:  { es:'47 páginas', en:'47 pages', ja:'47ページ' },
+    synopsis:{ es:'Una búsqueda de la verdad a través del misterio.', en:'A search for truth through mystery.', ja:'ミステリーを通じた真実의 探求。' },
+    link: { es:'https://amazon.com/', en:'https://amazon.com/', ja:'https://amazon.co.jp/' }
+  },
+  /* 3 - CENTRO DERECHA - gc-2-3 - VERDE */
+  {
+    gridClass: 'gc-2-3', outline: 'green', musicId: 'music-3',
+    cover: 'portada_ganar.jpg',
+    title:  { es:'¿Es correcto ganar?', en:'Is it correct to win?', ja:'勝つことは正しいのか？' },
+    slogan: { es:'Robando mi última carta, lo revelé.', en:'Stealing my last card, I revealed it.', ja:'最後のカードを奪って、私はそれを明かした。' },
+    free:   { es:'Gratis', en:'Free', ja:'無料' },
+    pages:  { es:'4 páginas', en:'4 pages', ja:'4ページ' },
+    synopsis:{ es:'¿Cuál es el precio de la victoria?', en:'What is the price of victory?', ja:'勝利の代償とは？' },
+    link: { es:'#', en:'#', ja:'#' }
+  },
+  /* 4 - ESQUINA INFERIOR DERECHA - gc-3-3 - NARANJA */
+  {
+    gridClass: 'gc-3-3', outline: 'orange', musicId: 'music-4',
+    cover: 'portada_valor.jpg',
+    title:  { es:'¿Es correcto el valor?', en:'Is courage correct?', ja:'勇気は正しいのか？' },
+    slogan: { es:'Negando mi valor, conocí el final.', en:'Denying my worth, I knew the end.', ja:'自分の価値を否定して、私は終わりを知った。' },
+    free:   { es:'Gratis', en:'Free', ja:'無料' },
+    pages:  { es:'1 página', en:'1 page', ja:'1ページ' },
+    synopsis:{ es:'Reflexión sobre el valor personal.', en:'Reflection on personal courage.', ja:'個人的な勇気についての考察。' },
+    link: { es:'#', en:'#', ja:'#' }
+  },
+  /* 5 - PICO INFERIOR - gc-3-2 - PÚRPURA */
+  {
+    gridClass: 'gc-3-2', outline: 'purple', musicId: 'music-5',
+    cover: 'portada_perder.jpg',
+    title:  { es:'¿Es correcto perder?', en:'Is it correct to lose?', ja:'負けることは正しいのか？' },
+    slogan: { es:'Protegiendo un fantasma, fui salvada.', en:'Protecting a ghost, I was saved.', ja:'幽霊を守ることで、私は救われた。' },
+    free:   { es:'Gratis', en:'Free', ja:'無料' },
+    pages:  { es:'4 páginas', en:'4 pages', ja:'4ページ' },
+    synopsis:{ es:'Una historia sobre la redención y la pérdida.', en:'A story of redemption and loss.', ja:'救済と喪失の物語。' },
+    link: { es:'#', en:'#', ja:'#' }
+  },
+  /* 6 - ESQUINA INFERIOR IZQUIERDA - gc-3-1 - GRIS */
+  {
+    gridClass: 'gc-3-1', outline: 'gray', musicId: 'music-6',
+    cover: '',
+    title:  { es:'???', en:'???', ja:'???' },
+    slogan: { es:'???', en:'???', ja:'???' },
+    free:   { es:'???', en:'???', ja:'???' },
+    pages:  { es:'??? páginas', en:'??? pages', ja:'???ページ' },
+    synopsis:{ es:'Próximamente.', en:'Coming soon.', ja:'近日公開。' },
+    link: { es:'#', en:'#', ja:'#' }
+  },
+  /* 7 - CENTRO IZQUIERDA - gc-2-1 - ROJO */
+  {
+    gridClass: 'gc-2-1', outline: 'red', musicId: 'music-7',
+    cover: 'portada_temer.jpg',
+    title:  { es:'¿Es correcto temer a la felicidad?', en:'Is it correct to fear happiness?', ja:'幸せを恐れることは正しいのか？' },
+    slogan: { es:'Intentando conseguir la felicidad de todos, perdí la mía.', en:'Trying to achieve everyone\'s happiness, I lost mine.', ja:'みんなの幸せを手に入れようとして、自分の幸せを失った。' },
+    free:   { es:'Pago', en:'Paid', ja:'有料' },
+    pages:  { es:'305 páginas', en:'305 pages', ja:'305ページ' },
+    synopsis:{ es:'La novela más extensa de la serie.', en:'The most extensive novel in the series.', ja:'シリーズで最も長い小説。' },
+    link: { es:'https://amazon.com/', en:'https://amazon.com/', ja:'https://amazon.co.jp/' }
+  },
+  /* 8 - ESQUINA SUPERIOR IZQUIERDA - gc-1-1 - RAINBOW */
+  {
+    gridClass: 'gc-1-1', outline: 'rainbow', musicId: 'music-8',
+    cover: '',
+    title:  { es:'Próximamente', en:'Coming Soon', ja:'近日公開' },
+    slogan: { es:'El ciclo se completa.', en:'The cycle is complete.', ja:'サイクルが完了します。' },
+    free:   { es:'???', en:'???', ja:'???' },
+    pages:  { es:'??? páginas', en:'??? pages', ja:'???ページ' },
+    synopsis:{ es:'Contenido secreto por revelar.', en:'Secret content to be revealed.', ja:'秘密の内容。' },
+    link: { es:'#', en:'#', ja:'#' }
+  }
+];
+
+/* ══════════════════════ BUILD DIAMONDS ══════════════════════ */
+let currentLang = 'es';
+let activeMusic = null;
+
+function buildDiamonds() {
+  const grid = document.getElementById('gridContainer');
+  const logo = document.getElementById('centerLogo');
+
+  NOVELS.forEach(novel => {
+    const cell = document.createElement('div');
+    cell.className = `rombo oc-${novel.outline} ${novel.gridClass}`;
+
+    // Cover div
+    const cover = document.createElement('div');
+    cover.className = 'r-cover';
+    if (novel.cover) cover.style.backgroundImage = `url('${novel.cover}')`;
+
+    // Hover overlay
+    const overlay   = document.createElement('div');
+    overlay.className = 'r-overlay';
+    const inner = document.createElement('div');
+    inner.className = 'r-overlay-inner';
+
+    const titleEl = document.createElement('div');
+    titleEl.className = 'r-title';
+    titleEl.dataset.ip = JSON.stringify(novel.title);
+
+    const badgeEl = document.createElement('div');
+    badgeEl.className = 'r-badge';
+    badgeEl.dataset.ip = JSON.stringify(novel.free);
+
+    const pagesEl = document.createElement('div');
+    pagesEl.className = 'r-pages';
+    pagesEl.dataset.ip = JSON.stringify(novel.pages);
+
+    inner.appendChild(titleEl);
+    inner.appendChild(badgeEl);
+    inner.appendChild(pagesEl);
+    overlay.appendChild(inner);
+    cell.appendChild(cover);
+    cell.appendChild(overlay);
+
+    // Insert before logo so logo stays at col2 row2
+    grid.insertBefore(cell, logo);
+
+    // Events
+    cell.addEventListener('mouseenter', () => {
+      playHoverSfx();
+      playMusic(novel.musicId);
+      if (novel.bg) {
+        const bg = document.getElementById('novelas-bg');
+        bg.style.backgroundImage = `url('${novel.bg}')`;
+        bg.style.opacity = '0.18';
+      }
+    });
+    cell.addEventListener('mouseleave', () => {
+      stopMusic(novel.musicId);
+      const bg = document.getElementById('novelas-bg');
+      bg.style.opacity = '0';
+    });
+    cell.addEventListener('mousemove', e => showTip(e, novel.slogan[currentLang]));
+    cell.addEventListener('mouseleave', hideTip);
+    cell.addEventListener('click', () => openModal(novel));
+  });
+
+  applyLang(currentLang);
+}
+
+/* ══════════════════════ COLLAB GRIDS ══════════════════════ */
+function buildCollabGrid(id) {
+  const c = document.getElementById(id);
+  for (let i = 0; i < 8; i++) {
+    const item = document.createElement('a');
+    item.className = 'collab-item hov-sfx';
+    item.href = '#'; item.target = '_blank';
+    item.textContent = '+';
+    item.addEventListener('mousemove', e => showTip(e, 'Cambiar por agradecimiento'));
+    item.addEventListener('mouseleave', hideTip);
+    c.appendChild(item);
+  }
+}
+
+/* ══════════════════════ AUDIO ══════════════════════ */
+function playHoverSfx() {
+  const el = document.getElementById('sfx-hover');
+  if (!el) return;
+  el.currentTime = 0;
+  el.volume = 0.55;
+  el.play().catch(() => {});
+}
+
+function playMusic(id) {
+  const el = document.getElementById(id);
+  if (!el || (activeMusic && activeMusic === el)) return;
+  stopAllMusic();
+  el.volume = 0;
+  el.play().catch(() => {});
+  activeMusic = el;
+  fadeTo(el, 0.65, 900);
+}
+
+function stopMusic(id) {
+  const el = document.getElementById(id);
+  if (!el || el.paused) return;
+  fadeTo(el, 0, 700, () => { el.pause(); el.currentTime = 0; });
+  activeMusic = null;
+}
+
+function stopAllMusic() {
+  for (let i = 1; i <= 8; i++) {
+    const el = document.getElementById(`music-${i}`);
+    if (el && !el.paused) { el.pause(); el.currentTime = 0; el.volume = 0; }
+  }
+  activeMusic = null;
+}
+
+function fadeTo(el, target, ms, done) {
+  const steps = 20, iv = ms / steps;
+  const start = el.volume, diff = target - start;
+  let n = 0;
+  clearInterval(el._ft);
+  el._ft = setInterval(() => {
+    n++;
+    el.volume = Math.max(0, Math.min(1, start + diff * n / steps));
+    if (n >= steps) { clearInterval(el._ft); if (done) done(); }
+  }, iv);
+}
+
+/* ══════════════════════ CURSOR TIP ══════════════════════ */
+const tipEl = document.getElementById('cursor-tip');
+document.addEventListener('mousemove', e => {
+  tipEl.style.left = (e.clientX + 16) + 'px';
+  tipEl.style.top  = (e.clientY - 6)  + 'px';
+});
+function showTip(e, text) {
+  tipEl.textContent = text || '';
+  tipEl.style.display = text ? 'block' : 'none';
+}
+function hideTip() { tipEl.style.display = 'none'; }
+
+/* ══════════════════════ MODAL ══════════════════════ */
+function openModal(novel) {
+  const L = currentLang;
+  document.getElementById('m-title').textContent   = novel.title[L];
+  document.getElementById('m-slogan').textContent  = novel.slogan[L];
+  document.getElementById('m-badge').textContent   = novel.free[L];
+  document.getElementById('m-pages').textContent   = novel.pages[L];
+  document.getElementById('m-genres').textContent  = novel.genres[L];
+  document.getElementById('m-synopsis').textContent = novel.synopsis[L];
+  const yt = document.getElementById('m-yt');
+  if (novel.youtube) {
+    yt.className = 'modal-youtube';
+    yt.innerHTML = `<iframe src="${novel.youtube}" allow="autoplay;encrypted-media" allowfullscreen></iframe>`;
+  } else {
+    yt.className = 'modal-yt-placeholder';
+    yt.innerHTML = `<svg width="42" height="42" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+      <span>Tráiler<br><small style="opacity:.35">(Añade URL de YouTube)</small></span>`;
+  }
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.getElementById('m-yt').innerHTML = '';
+}
+function overlayClick(e) {
+  if (e.target.id === 'modal-overlay') closeModal();
+}
+
+/* ══════════════════════ I18N ══════════════════════ */
+function setLang(lang) {
+  currentLang = lang;
+  document.getElementById('langDropdown').classList.remove('open');
+  const flags = { es:'flag-es.png', en:'flag-en.png', ja:'flag-ja.png' };
+  const codes = { es:'ESP', en:'ENG', ja:'JPN' };
+  document.getElementById('flagImg').src = flags[lang];
+  document.getElementById('langCode').textContent = codes[lang];
+  document.documentElement.lang = lang;
+  applyLang(lang);
+}
+
+function applyLang(lang) {
+  // t-es / t-en / t-ja spans
+  ['es','en','ja'].forEach(l =>
+    document.querySelectorAll(`.t-${l}`).forEach(el =>
+      el.style.display = l === lang ? '' : 'none'
+    )
+  );
+  // data-i18n
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    try { el.textContent = JSON.parse(el.dataset.i18n)[lang] || ''; } catch(e){}
+  });
+  // data-ip (inline novel props in diamonds)
+  document.querySelectorAll('[data-ip]').forEach(el => {
+    try { el.textContent = JSON.parse(el.dataset.ip)[lang] || ''; } catch(e){}
+  });
+}
+
+/* ══════════════════════ LANG DROPDOWN ══════════════════════ */
+document.getElementById('langSelector').addEventListener('click', e => {
+  document.getElementById('langDropdown').classList.toggle('open');
+  e.stopPropagation();
+});
+document.addEventListener('click', () =>
+  document.getElementById('langDropdown').classList.remove('open')
+);
+
+/* ══════════════════════ HOVER SFX ══════════════════════ */
+document.addEventListener('mouseover', e => {
+  if (e.target.closest('.hov-sfx')) playHoverSfx();
+});
+
+/* ══════════════════════ CENTER LOGO TIP ══════════════════════ */
+const cLogo = document.getElementById('centerLogo');
+cLogo.addEventListener('mousemove', e => showTip(e, 'Lekim-sama'));
+cLogo.addEventListener('mouseleave', hideTip);
+
+/* ══════════════════════ SCROLL NAV ══════════════════════ */
+function goTo(id) {
+  document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+}
+
+/* ══════════════════════ INIT ══════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  buildDiamonds();
+  buildCollabGrid('voiceGrid');
+  buildCollabGrid('composerGrid');
+  buildCollabGrid('artistGrid');
+  applyLang('es');
+  // Descomenta para detección automática de idioma:
+  // const nl = (navigator.language||'').toLowerCase();
+  // if (nl.startsWith('ja')) setLang('ja');
+  // else if (nl.startsWith('en')) setLang('en');
+});
+</script>
+</body>
+</html>
