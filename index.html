@@ -1059,132 +1059,129 @@ nav {
 }
 #sidebar-overlay.visible { display: block; }
 
-/* ════════════════════ RESPONSIVE — TABLET (≤900px) ════════════════════ */
+/* ════════════════════ RESPONSIVE — TABLET + MÓVIL (≤900px) ════════════════════ */
 @media (max-width: 900px) {
-  :root { --sidebar-w: 280px; --cell: 140px; }
+  :root { --cell: 130px; }
 
+  /* ── NAVBAR ── */
+  /* Quitar padding-left que apuntaba a la sidebar */
+  nav {
+    padding: 0 0.8rem;
+    gap: 0.5rem;
+  }
+  /* El logo estaba position:fixed en base; lo metemos en el flujo del nav */
+  .nav-logo {
+    position: static !important;
+    top: auto !important;
+    left: auto !important;
+    flex: 1;
+    font-size: 1rem;
+    z-index: auto;
+  }
+  /* Mostrar botón hamburguesa */
   #menu-toggle { display: flex; }
 
-  /* Navbar sin padding de sidebar */
-  nav {
-    padding: 0 1rem 0 0.5rem;
-    justify-content: flex-start;
-  }
-  .nav-logo {
-    position: static;
-    font-size: 1rem;
-    flex: 1;
-  }
+  /* Links del nav: más compactos */
   .nav-links {
     border-left: none;
-    gap: 0;
   }
   .nav-links a {
-    font-size: 0.72rem;
-    padding: 0 0.7rem;
-    letter-spacing: 0.06em;
+    font-size: 0.7rem;
+    padding: 0 0.6rem;
+    letter-spacing: 0.05em;
   }
 
-  /* Sidebar como drawer lateral */
+  /* ── SIDEBAR como drawer ── */
   #sidebar {
     top: 0;
-    left: calc(-1 * var(--sidebar-w) - 4px);
-    transition: left 0.3s ease;
-    z-index: 800;
-    padding-top: 60px;
+    left: -320px;   /* fuera de pantalla */
+    transition: left 0.3s ease, box-shadow 0.3s ease;
+    z-index: 900;
+    padding-top: 58px;
     box-shadow: none;
   }
   #sidebar.open {
     left: 0;
-    box-shadow: 4px 0 24px rgba(0,0,0,0.7);
+    box-shadow: 6px 0 30px rgba(0,0,0,0.8);
   }
 
-  /* Main content ocupa todo el ancho */
-  #main-content {
-    margin-left: 0;
-  }
+  /* ── MAIN CONTENT sin margen lateral ── */
+  #main-content { margin-left: 0; }
 
-  /* Grid de rombos más pequeño */
-  .grid-wrapper { padding: 80px 20px; }
+  /* ── GRID de rombos ── */
+  .grid-wrapper { padding: 70px 16px; }
 
-  /* Author notices: panel debajo del trigger en móvil */
-  .author-notice-panel {
-    left: 0;
-    top: calc(100% + 0.4rem);
-    width: min(320px, 85vw);
-    transform: translateY(-8px);
+  /* ── MODAL del rombo: columna única ── */
+  .modal-box {
+    flex-direction: column;
+    padding: 2rem 1.4rem;
+    gap: 1.2rem;
+    max-height: 92vh;
   }
+  .modal-right { width: 100%; }
+
+  /* ── AVISOS DEL AUTOR: clic abre panel centrado fixed ── */
+  /* Deshabilitar hover en pantallas táctiles */
   .author-notice-wrap:hover .author-notice-panel {
-    transform: translateY(0);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-8px);
   }
-  /* En touch/móvil los avisos se abren con clic y se muestran como fixed */
+  /* Panel activo vía JS: fixed centrado, z-index alto */
   .author-notice-wrap.touch-open .author-notice-panel {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: min(360px, 88vw);
-    z-index: 5000;
-    opacity: 1;
-    pointer-events: auto;
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: min(380px, 90vw) !important;
+    z-index: 5100 !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    max-height: 70vh;
+    overflow-y: auto;
   }
   .author-notice-wrap.touch-open .author-notice-trigger {
     border-color: rgba(255,255,255,0.62);
     background: rgba(18,18,18,0.96);
   }
-
-  /* Modal responsivo */
-  .modal-box {
-    flex-direction: column;
-    padding: 2rem 1.5rem;
-    gap: 1.5rem;
-    max-height: 92vh;
-  }
-  .modal-right { width: 100%; }
 }
 
-/* ════════════════════ RESPONSIVE — MÓVIL (≤600px) ════════════════════ */
+/* ════════════════════ RESPONSIVE — MÓVIL PEQUEÑO (≤600px) ════════════════════ */
 @media (max-width: 600px) {
-  :root { --cell: 100px; --gap: 1px; }
+  :root { --cell: 90px; }
 
-  /* Navbar: ocultar nav-links en móvil pequeño, dejar solo hamburguesa + logo */
+  /* Ocultar nav-links: todo va en la sidebar */
   .nav-links { display: none; }
 
-  .grid-wrapper { padding: 50px 10px; }
+  /* Grid más compacto */
+  .grid-wrapper { padding: 40px 8px; }
 
-  /* Secciones con menos padding */
-  .section-inner { padding: 2rem 1.2rem; }
-  .sec-title { font-size: 1.3rem; }
+  /* Secciones */
+  .section-inner { padding: 1.8rem 1rem; }
+  .sec-title { font-size: 1.25rem; }
 
-  /* Extras grid más compacta */
-  .extra-item { width: 120px; height: 120px; }
-  .collab-item { width: 90px; height: 90px; }
+  /* Items de extras/colabs */
+  .extra-item  { width: 110px; height: 110px; }
+  .collab-item { width: 85px;  height: 85px; }
 
-  /* Modales a pantalla completa casi */
-  #modal-overlay { padding: 0.8rem; }
+  /* Modal */
+  #modal-overlay { padding: 0.6rem; }
   .modal-box {
-    padding: 1.5rem 1rem;
-    max-height: 95vh;
+    padding: 1.4rem 1rem;
+    max-height: 96vh;
   }
-  .modal-title { font-size: 1.2rem; }
+  .modal-title { font-size: 1.15rem; }
 
   /* Logo modal */
-  #logo-modal-box { padding: 2rem 1.2rem; }
+  #logo-modal-box { padding: 1.8rem 1rem; }
 
-  /* Illus box */
-  #illus-overlay { padding: 0.8rem; }
-  #illus-box { padding: 1.5rem 1rem 1rem; }
-  #illus-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+  /* Ilustraciones */
+  #illus-overlay { padding: 0.5rem; }
+  #illus-box { padding: 1.2rem 0.9rem 1rem; }
+  #illus-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
 
-  /* Author notices: panel más estrecho */
-  .author-notice-panel { width: min(280px, 90vw); }
-  .author-notice-wrap { position: static; margin-bottom: 0.3rem; }
-
-  /* Reposicionar avisos del autor para móvil - apilados */
-  #novelas .author-notice-wrap { position: absolute; }
-
-  /* music-alert-panel: reposicionar */
-  #music-alert-panel { width: min(260px, 85vw); }
+  /* Panel de alerta musical */
+  #music-alert-panel { width: min(250px, 88vw); }
 }
 /* Overlay para avisos del autor en móvil */
 #notice-overlay {
