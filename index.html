@@ -1014,6 +1014,157 @@ nav {
   transition: background 0.2s, color 0.2s;
 }
 #illus-viewer-nav button:hover { background: rgba(255,255,255,0.14); color: #fff; }
+/* ════════════════════ HAMBURGER BUTTON ════════════════════ */
+#menu-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  flex-shrink: 0;
+  margin-right: 0.5rem;
+  z-index: 1100;
+}
+#menu-toggle span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: rgba(255,255,255,0.75);
+  transition: all 0.25s ease;
+}
+#menu-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+#menu-toggle.open span:nth-child(2) { opacity: 0; }
+#menu-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* Overlay oscuro cuando sidebar está abierta en móvil */
+#sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 790;
+  backdrop-filter: blur(2px);
+}
+#sidebar-overlay.visible { display: block; }
+
+/* ════════════════════ RESPONSIVE — TABLET (≤900px) ════════════════════ */
+@media (max-width: 900px) {
+  :root { --sidebar-w: 280px; --cell: 140px; }
+
+  #menu-toggle { display: flex; }
+
+  /* Navbar sin padding de sidebar */
+  nav {
+    padding: 0 1rem 0 0.5rem;
+    justify-content: flex-start;
+  }
+  .nav-logo {
+    position: static;
+    font-size: 1rem;
+    flex: 1;
+  }
+  .nav-links {
+    border-left: none;
+    gap: 0;
+  }
+  .nav-links a {
+    font-size: 0.72rem;
+    padding: 0 0.7rem;
+    letter-spacing: 0.06em;
+  }
+
+  /* Sidebar como drawer lateral */
+  #sidebar {
+    top: 0;
+    left: calc(-1 * var(--sidebar-w) - 4px);
+    transition: left 0.3s ease;
+    z-index: 800;
+    padding-top: 60px;
+    box-shadow: none;
+  }
+  #sidebar.open {
+    left: 0;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.7);
+  }
+
+  /* Main content ocupa todo el ancho */
+  #main-content {
+    margin-left: 0;
+  }
+
+  /* Grid de rombos más pequeño */
+  .grid-wrapper { padding: 80px 20px; }
+
+  /* Author notices: panel debajo del trigger en móvil */
+  .author-notice-panel {
+    left: 0;
+    top: calc(100% + 0.4rem);
+    width: min(320px, 85vw);
+    transform: translateY(-8px);
+  }
+  .author-notice-wrap:hover .author-notice-panel {
+    transform: translateY(0);
+  }
+
+  /* Modal responsivo */
+  .modal-box {
+    flex-direction: column;
+    padding: 2rem 1.5rem;
+    gap: 1.5rem;
+    max-height: 92vh;
+  }
+  .modal-right { width: 100%; }
+}
+
+/* ════════════════════ RESPONSIVE — MÓVIL (≤600px) ════════════════════ */
+@media (max-width: 600px) {
+  :root { --cell: 100px; --gap: 1px; }
+
+  /* Navbar: ocultar nav-links en móvil pequeño, dejar solo hamburguesa + logo */
+  .nav-links { display: none; }
+
+  .grid-wrapper { padding: 50px 10px; }
+
+  /* Secciones con menos padding */
+  .section-inner { padding: 2rem 1.2rem; }
+  .sec-title { font-size: 1.3rem; }
+
+  /* Extras grid más compacta */
+  .extra-item { width: 120px; height: 120px; }
+  .collab-item { width: 90px; height: 90px; }
+
+  /* Modales a pantalla completa casi */
+  #modal-overlay { padding: 0.8rem; }
+  .modal-box {
+    padding: 1.5rem 1rem;
+    max-height: 95vh;
+  }
+  .modal-title { font-size: 1.2rem; }
+
+  /* Logo modal */
+  #logo-modal-box { padding: 2rem 1.2rem; }
+
+  /* Illus box */
+  #illus-overlay { padding: 0.8rem; }
+  #illus-box { padding: 1.5rem 1rem 1rem; }
+  #illus-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+
+  /* Author notices: panel más estrecho */
+  .author-notice-panel { width: min(280px, 90vw); }
+  .author-notice-wrap { position: static; margin-bottom: 0.3rem; }
+
+  /* Reposicionar avisos del autor para móvil - apilados */
+  #novelas .author-notice-wrap { position: absolute; }
+
+  /* music-alert-panel: reposicionar */
+  #music-alert-panel { width: min(260px, 85vw); }
+}
 
 </style>
 </head>
@@ -1051,6 +1202,9 @@ nav {
 
 <!-- ════════ NAVBAR ════════ -->
 <nav>
+  <button id="menu-toggle" aria-label="Menú" onclick="toggleSidebar()">
+    <span></span><span></span><span></span>
+  </button>
   <div class="nav-logo hov-sfx" onclick="goTo('novelas')"><span class="t-es">¿Es correcto...?</span><span class="t-en">Is it right...?</span><span class="t-ja">…は正しいか？</span></div>
   <div class="nav-links">
     <a class="hov-sfx" onclick="goTo('novelas')">
@@ -1124,6 +1278,9 @@ nav {
     </p>
   </div>
 </div>
+
+<!-- Overlay para cerrar sidebar en móvil -->
+<div id="sidebar-overlay" onclick="closeSidebar()"></div>
 
 <!-- ════════ MAIN CONTENT ════════ -->
 <div id="main-content">
@@ -3719,6 +3876,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 function goTo(id) {
+  closeSidebar();
   const el = document.getElementById(id);
   if (!el) return;
   if (id === 'novelas') {
@@ -3829,6 +3987,31 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowRight') illusViewerNext();
   if (e.key === 'Escape')     closeIllusViewer();
 });
+
+/* ══════════════════════ SIDEBAR TOGGLE (MÓVIL) ══════════════════════ */
+function toggleSidebar() {
+  const sidebar  = document.getElementById('sidebar');
+  const overlay  = document.getElementById('sidebar-overlay');
+  const btn      = document.getElementById('menu-toggle');
+  const isOpen   = sidebar.classList.contains('open');
+  if (isOpen) {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('visible');
+    btn.classList.remove('open');
+    document.body.style.overflow = '';
+  } else {
+    sidebar.classList.add('open');
+    overlay.classList.add('visible');
+    btn.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('visible');
+  document.getElementById('menu-toggle').classList.remove('open');
+  document.body.style.overflow = '';
+}
 
 </script>
 
