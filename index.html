@@ -248,6 +248,7 @@ nav {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  overflow: hidden;
 }
 
 /* ════════════════════ MUSIC ALERT NOTICE ════════════════════ */
@@ -282,7 +283,8 @@ nav {
   color: #fff;
 }
 
-#music-alert-panel {
+#music-alert-panel,
+#drawing-alert-panel {
   position: fixed;
   width: 300px;
   background: rgba(8,8,8,0.97);
@@ -298,7 +300,8 @@ nav {
   white-space: normal;
 }
 
-#music-alert-panel.visible {
+#music-alert-panel.visible,
+#drawing-alert-panel.visible {
   opacity: 1;
   transform: translateX(0);
   pointer-events: auto;
@@ -319,6 +322,9 @@ nav {
   justify-content: center;
   align-items: center;
   padding: 20px 120px;
+  /* El grid rotado 45° necesita espacio diagonal: limitamos para que no se salga */
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .grid-container {
@@ -991,6 +997,17 @@ nav {
 }
 #sidebar-overlay.visible { display: block; }
 
+/* ════════════════════ RESPONSIVE — ESCRITORIO ESTRECHO (≤1300px) ════════════════════ */
+@media (max-width: 1300px) and (min-width: 901px) {
+  :root { --cell: 150px; }
+  .grid-wrapper { padding: 20px 60px; }
+}
+
+@media (max-width: 1100px) and (min-width: 901px) {
+  :root { --cell: 130px; }
+  .grid-wrapper { padding: 20px 30px; }
+}
+
 /* ════════════════════ RESPONSIVE — TABLET + MÓVIL (≤900px) ════════════════════ */
 @media (max-width: 900px) {
   :root { --cell: 130px; }
@@ -1035,6 +1052,7 @@ nav {
 
   /* ── GRID de rombos ── */
   .grid-wrapper { padding: 40px 16px; }
+  #novelas { min-height: 100svh; }
 
   /* ── MODAL del rombo: columna única, scroll vertical ── */
   #modal-overlay {
@@ -1092,7 +1110,7 @@ nav {
   #illus-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
 
   /* Panel de alerta musical */
-  #music-alert-panel { width: min(250px, 88vw); }
+  #music-alert-panel, #drawing-alert-panel { width: min(250px, 88vw); }
 }
 
 /* ════════════════════ MODAL ACLARACIONES ════════════════════ */
@@ -1373,11 +1391,15 @@ nav {
         </div>
 
         <div class="extras-col">
-          <p class="extras-category-title">
-            <span class="t-es">Dibujos</span>
-            <span class="t-en">Drawings</span>
-            <span class="t-ja">イラスト</span>
-          </p>
+          <!-- Drawing title with alert icon -->
+          <div style="display:flex;align-items:center;height:1.6rem;margin-bottom:0.75rem;">
+            <p class="extras-category-title" style="margin:0;height:auto;">
+              <span class="t-es">Dibujos</span>
+              <span class="t-en">Drawings</span>
+              <span class="t-ja">イラスト</span>
+            </p>
+            <span class="music-alert-icon" id="drawing-alert-trigger">!</span>
+          </div>
           <div class="extras-grid">
             <div class="extra-item hov-sfx" style="cursor:pointer;" onclick="openIllusModal()">
               <img src="dibujo_1.jpg" alt="Dibujos">
@@ -1553,6 +1575,12 @@ nav {
   <p class="music-alert-panel-text t-es">La música y la voz cantante está hecha con IA, pero la letra no.</p>
   <p class="music-alert-panel-text t-en">The music and singing voice are made with AI, but the lyrics are not.</p>
   <p class="music-alert-panel-text t-ja">音楽と歌声はAIで制作されていますが、歌詞は違います。</p>
+</div>
+
+<div id="drawing-alert-panel">
+  <p class="music-alert-panel-text t-es">Puede haber dibujos míos; también usando IA como herramienta. No me considero ilustrador, es mi peor cualidad. Los diseños de los personajes no son IA.</p>
+  <p class="music-alert-panel-text t-en">There may be drawings of my own, some made using AI as a tool. I don’t consider myself an illustrator; it’s my worst skill. However, the character designs are not AI.</p>
+  <p class="music-alert-panel-text t-ja">自作のイラストがある場合があります。AIをツールとして使用したものも含みます。自分をイラストレーターだとは思っていませんし、それは私の最も苦手な分野です。ただし、キャラクターデザインはAIではありません。</p>
 </div>
 
 <!-- MODAL -->
@@ -3853,6 +3881,36 @@ document.addEventListener('DOMContentLoaded', () => {
   trigger.addEventListener('mouseenter', () => {
     positionPanel();
     // apply current lang visibility
+    applyLang(currentLang);
+    panel.classList.add('visible');
+    trigger.classList.add('active');
+  });
+  trigger.addEventListener('mousemove', positionPanel);
+  trigger.addEventListener('mouseleave', () => {
+    panel.classList.remove('visible');
+    trigger.classList.remove('active');
+  });
+  panel.addEventListener('mouseenter', () => panel.classList.add('visible'));
+  panel.addEventListener('mouseleave', () => {
+    panel.classList.remove('visible');
+    trigger.classList.remove('active');
+  });
+});
+
+/* ══════════════════════ DRAWING ALERT ══════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  const trigger = document.getElementById('drawing-alert-trigger');
+  const panel   = document.getElementById('drawing-alert-panel');
+  if (!trigger || !panel) return;
+
+  function positionPanel() {
+    const rect = trigger.getBoundingClientRect();
+    panel.style.top  = rect.top + 'px';
+    panel.style.left = (rect.right + 10) + 'px';
+  }
+
+  trigger.addEventListener('mouseenter', () => {
+    positionPanel();
     applyLang(currentLang);
     panel.classList.add('visible');
     trigger.classList.add('active');
