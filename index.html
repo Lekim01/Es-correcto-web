@@ -1021,22 +1021,28 @@ nav {
   justify-content: center;
   align-items: center;
   gap: 5px;
-  width: 40px;
-  height: 40px;
-  background: transparent;
-  border: none;
+  width: 42px;
+  height: 42px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.35);
   cursor: pointer;
   padding: 4px;
   flex-shrink: 0;
-  margin-right: 0.5rem;
+  margin-right: 0.6rem;
   z-index: 1100;
+  transition: background 0.2s, border-color 0.2s;
+}
+#menu-toggle:hover, #menu-toggle.open {
+  background: rgba(255,255,255,0.15);
+  border-color: rgba(255,255,255,0.75);
 }
 #menu-toggle span {
   display: block;
   width: 22px;
   height: 2px;
-  background: rgba(255,255,255,0.75);
+  background: #ffffff;
   transition: all 0.25s ease;
+  border-radius: 1px;
 }
 #menu-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
 #menu-toggle.open span:nth-child(2) { opacity: 0; }
@@ -1111,6 +1117,21 @@ nav {
   .author-notice-wrap:hover .author-notice-panel {
     transform: translateY(0);
   }
+  /* En touch/móvil los avisos se abren con clic y se muestran como fixed */
+  .author-notice-wrap.touch-open .author-notice-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(360px, 88vw);
+    z-index: 5000;
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .author-notice-wrap.touch-open .author-notice-trigger {
+    border-color: rgba(255,255,255,0.62);
+    background: rgba(18,18,18,0.96);
+  }
 
   /* Modal responsivo */
   .modal-box {
@@ -1165,6 +1186,15 @@ nav {
   /* music-alert-panel: reposicionar */
   #music-alert-panel { width: min(260px, 85vw); }
 }
+/* Overlay para avisos del autor en móvil */
+#notice-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 4990;
+}
+#notice-overlay.visible { display: block; }
 
 </style>
 </head>
@@ -1278,6 +1308,9 @@ nav {
     </p>
   </div>
 </div>
+
+<!-- Overlay para cerrar avisos del autor en móvil -->
+<div id="notice-overlay" onclick="closeAllNotices()"></div>
 
 <!-- Overlay para cerrar sidebar en móvil -->
 <div id="sidebar-overlay" onclick="closeSidebar()"></div>
@@ -3986,6 +4019,35 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowLeft')  illusViewerPrev();
   if (e.key === 'ArrowRight') illusViewerNext();
   if (e.key === 'Escape')     closeIllusViewer();
+});
+
+/* ══════════════════════ AUTHOR NOTICES — TOUCH/MÓVIL ══════════════════════ */
+function isTouchDevice() {
+  return window.matchMedia('(max-width: 900px)').matches;
+}
+
+function closeAllNotices() {
+  document.querySelectorAll('.author-notice-wrap.touch-open').forEach(el => {
+    el.classList.remove('touch-open');
+  });
+  document.getElementById('notice-overlay').classList.remove('visible');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.author-notice-wrap').forEach(wrap => {
+    const trigger = wrap.querySelector('.author-notice-trigger');
+    if (!trigger) return;
+    trigger.addEventListener('click', e => {
+      if (!isTouchDevice()) return;
+      e.stopPropagation();
+      const isOpen = wrap.classList.contains('touch-open');
+      closeAllNotices();
+      if (!isOpen) {
+        wrap.classList.add('touch-open');
+        document.getElementById('notice-overlay').classList.add('visible');
+      }
+    });
+  });
 });
 
 /* ══════════════════════ SIDEBAR TOGGLE (MÓVIL) ══════════════════════ */
