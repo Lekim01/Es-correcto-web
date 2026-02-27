@@ -580,6 +580,7 @@ nav {
   padding: 2.5rem;
   position: relative;
   display: flex;
+  flex-direction: row;
   gap: 2rem;
 }
 .modal-close {
@@ -594,6 +595,12 @@ nav {
 .modal-close:hover { color: #fff; }
 .modal-left  { flex: 1; min-width: 0; }
 .modal-right { width: 265px; flex-shrink: 0; }
+#modal-info-view {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  width: 100%;
+}
 .modal-title  { font-size: 1.52rem; font-style: italic; line-height: 1.25; margin-bottom: 0.4rem; }
 .modal-slogan {
   font-size: 0.87rem; font-style: italic;
@@ -619,8 +626,8 @@ nav {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: 0.45rem; color: rgba(255,255,255,0.25); font-size: 0.76rem; text-align: center;
 }
-.modal-youtube { width: 100%; aspect-ratio: 16/9; border: 1px solid rgba(255,255,255,0.1); }
-.modal-youtube iframe { width: 100%; height: 100%; border: none; display: block; }
+.modal-youtube { width: 100%; aspect-ratio: 16/9; border: 1px solid rgba(255,255,255,0.1); position: relative; }
+.modal-youtube iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; display: block; }
 
 /* ════════════════════ OTHER SECTIONS ════════════════════ */
 .section-inner { padding: 3rem 2.5rem; }
@@ -1109,23 +1116,28 @@ nav {
   /* ── GRID de rombos ── */
   .grid-wrapper { padding: 70px 16px; }
 
-  /* ── MODAL del rombo: columna única, ocupa bien la pantalla ── */
+  /* ── MODAL del rombo: columna única, scroll vertical ── */
   #modal-overlay {
-    padding: 0.5rem;
+    padding: 0.4rem;
     align-items: flex-start;
     overflow-y: auto;
   }
   .modal-box {
-    flex-direction: column;
-    padding: 2rem 1.2rem 1.5rem;
-    gap: 1.2rem;
-    max-height: none;
-    width: 100%;
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
+    padding: 2.2rem 1rem 1.5rem;
+    gap: 1rem;
+    max-height: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0.4rem 0;
   }
-  .modal-right { width: 100%; }
-  .modal-title { font-size: 1.25rem; }
+  #modal-info-view {
+    flex-direction: column !important;
+    gap: 1rem !important;
+  }
+  .modal-left  { width: 100% !important; min-width: 0; }
+  .modal-right { width: 100% !important; }
+  .modal-title { font-size: 1.2rem; }
+  .modal-close { top: 0.6rem; right: 0.7rem; }
 
   /* ── AVISOS DEL AUTOR: panel fijo centrado al tocar ── */
   .author-notice-wrap:hover .author-notice-panel {
@@ -1599,7 +1611,7 @@ nav {
     <span class="modal-close hov-sfx" onclick="closeModal()">✕</span>
 
     <!-- Vista INFO (por defecto) -->
-    <div id="modal-info-view" style="display:flex;gap:2rem;width:100%;">
+    <div id="modal-info-view">
       <div class="modal-left">
         <h2 class="modal-title"   id="m-title"></h2>
         <p  class="modal-slogan"  id="m-slogan"></p>
