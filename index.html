@@ -2228,6 +2228,7 @@ Before I could reach her with my stump, the serpent positioned itself behind her
       { nombre: { es:'Saari', en:'Saari', ja:'佐藤小織' }, url: 'https://lit.link/iiixsally', color: 'rgba(70,120,230,0.95)' },
       { nombre: { es:'Ikedoyuki', en:'Ikedoyuki', ja:'いけどゆき' }, url: 'https://ikedoyuki.wixsite.com/voice', color: 'rgba(70,120,230,0.95)' }
     ],
+    compositor: { nombre: { es:'Nanashi no gothic', en:'Nanashi no gothic', ja:'ナナシのゴシック!' }, url: 'https://x.com/nanashigothic', color: 'rgba(70,120,230,0.95)' },
     link: { es:'https://amazon.com/', en:'https://amazon.com/', ja:'https://amazon.co.jp/' }
   },
   {
@@ -2510,6 +2511,7 @@ With a meow of acceptance and a meager flick of my tail, I reached it with my pa
     },
     youtube: { es:'https://www.youtube.com/embed/u0qr8-klqZw', en:'https://www.youtube.com/embed/JlcXDN4Ix7A', ja:'https://www.youtube.com/embed/P4Rho4oA6ng' },
     actor: { nombre: { es:'Nanairo Seika', en:'Nanairo Seika', ja:'七彩聖加' }, url: 'https://lit.link/nanairoseika', color: 'rgba(230,135,45,0.95)' },
+    compositor: { nombre: { es:'Tak', en:'Tak', ja:'Tak' }, url: 'https://x.com/takmfkk', color: 'rgba(230,135,45,0.95)' },
     link: { es:'#', en:'#', ja:'#' }
   },
   {
@@ -2747,6 +2749,7 @@ Without a doubt, I stretched my hand toward the light, with longing, offering my
     },
     youtube: { es:'https://www.youtube.com/embed/JqK7tbq8kCs', en:'https://www.youtube.com/embed/G-VA0HA4_cw', ja:'https://www.youtube.com/embed/iNuxoYvVL3Q' },
     actor: { nombre: { es:'86 Haro', en:'86 Haro', ja:'86ハロ' }, url: 'https://lit.link/df7ce0b1-696a-4514-bbe3-a56041b14ac7', color: 'rgba(155,70,220,0.95)' },
+    compositor: { nombre: { es:'Rito Music', en:'Rito Music', ja:'Rito Music' }, url: 'https://www.youtube.com/channel/UC-X1eNg2tYeK5ONL6C3W6wg', color: 'rgba(155,70,220,0.95)' },
     link: { es:'#', en:'#', ja:'#' }
   },
   {
@@ -3571,6 +3574,7 @@ function buildCollabGrid(id, prefix, count) {
     else if (modalOverlayId) {
       item.style.cursor = 'pointer';
       item.addEventListener('click', () => {
+        hideTip();
         const prefixMap = { 'ilust2-overlay': 'ilustrador_2', 'ilust4-overlay': 'ilustrador_4' };
         buildIlustModal(modalOverlayId, prefixMap[modalOverlayId]);
         document.getElementById(modalOverlayId).classList.add('open');
@@ -3653,6 +3657,7 @@ let illusCustomImages = [];
 function openIllusViewerCustom(index, images) {
   illusCustomImages = images;
   illusViewerIndex = index;
+  hideTip();
   document.getElementById('illus-viewer-img').src = images[index];
   document.getElementById('illus-viewer').classList.add('open');
 }
@@ -3739,6 +3744,7 @@ function hideTip() { tipEl.style.display = 'none'; tipEl.style.color = '#fff'; }
 
 /* ══════════════════════ MODAL ══════════════════════ */
 function openModal(novel) {
+  hideTip();
   const L = currentLang;
   document.getElementById('m-title').textContent   = novel.title[L];
   document.getElementById('m-slogan').textContent  = novel.slogan[L];
@@ -3826,6 +3832,16 @@ function openModal(novel) {
     actorEl.innerHTML = label_real[L] + ': ' + parts.join(', ');
   } else {
     actorEl.innerHTML = '';
+  }
+
+  if (novel.compositor) {
+    const label_comp = { es:'Compositor', en:'Composer', ja:'作曲家' };
+    const comps = Array.isArray(novel.compositor) ? novel.compositor : [novel.compositor];
+    const compParts = comps.map(c => {
+      const nombre = typeof c.nombre === 'object' ? c.nombre[L] : c.nombre;
+      return `<a href="${c.url}" target="_blank" style="color:${c.color}">${nombre}</a>`;
+    });
+    actorEl.innerHTML += (actorEl.innerHTML ? '<br>' : '') + label_comp[L] + ': ' + compParts.join(', ');
   }
 }
 function closeModal() {
@@ -4138,6 +4154,7 @@ async function discoverDibujos() {
 }
 
 async function openIllusModal() {
+  hideTip();
   const grid = document.getElementById('illus-grid');
   if (!grid.hasChildNodes()) {
     ILLUS_IMAGES = await discoverDibujos();
@@ -4226,6 +4243,7 @@ const ACL_DATA = {
 };
 
 function openAclaracionesModal() {
+  hideTip();
   closeSidebar();
   // Asegurarse de mostrar la lista al abrir
   document.getElementById('aclaraciones-list').style.display = 'block';
