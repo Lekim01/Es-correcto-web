@@ -1407,8 +1407,8 @@ nav {
     <span class="t-en">YouTube</span>
     <span class="t-ja">ユーチューブ</span>
   </a>
-  <a class="sb-btn btn-x hov-sfx" href="https://x.com/LekimY01" target="_blank">X</a>
-  <a class="sb-btn btn-correo hov-sfx" href="https://docs.google.com/forms/d/e/1FAIpQLSeoRttt5NnAEXQnlHewwqoIzXXV9nBVGm05Mg-YowobahZ6kQ/viewform?usp=dialog">
+  <a class="sb-btn hov-sfx" href="https://x.com/LekimY01" target="_blank">X</a>
+  <a class="sb-btn hov-sfx" href="https://docs.google.com/forms/d/e/1FAIpQLSeoRttt5NnAEXQnlHewwqoIzXXV9nBVGm05Mg-YowobahZ6kQ/viewform?usp=dialog">
     <span class="t-es">Contacta aquí</span>
     <span class="t-en">Contact here</span>
     <span class="t-ja">お問い合わせ</span>
@@ -1450,7 +1450,7 @@ nav {
       <div class="grid-container" id="gridContainer">
         <div class="logo-central hov-sfx" id="centerLogo"
              style="grid-column:2;grid-row:2">
-          <img src="tu_logo.png" alt="Logo ¿Es correcto...?" style="max-width: 100%; height: auto;">
+          <img src="tu_logo.png" alt="Logo ¿Es correcto...?" draggable="false" style="max-width: 100%; height: auto; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;">
         </div>
       </div>
     </div>
@@ -1558,7 +1558,7 @@ nav {
         <div style="flex:1; min-width: 260px;">
 
           <!-- Sección personal -->
-          <div class="sobre-block">
+          <div>
             <p class="sobre-block-label t-es">Personal</p>
             <p class="sobre-block-label t-en">Personal</p>
             <p class="sobre-block-label t-ja">個人</p>
@@ -1620,7 +1620,7 @@ nav {
           </div>
 
           <!-- Sección novela -->
-          <div class="sobre-block">
+          <div>
             <ul class="sobre-list t-es">
               <li>Empecé la novela en octubre de 2018 y la publiqué como una trilogía el último día de 2023.</li>
               <li>Desde 2021 que la publiqué en Amazon, hasta inicios de 2026, la novela generó en 5 años 15€.</li>
@@ -3664,11 +3664,6 @@ function openIllusViewerCustom(index, images) {
   document.getElementById('illus-viewer').classList.add('open');
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  // Los modales se construyen la primera vez que se abren (lazy)
-});
-
-// Patch illusViewerPrev/Next to use custom images if active — consolidado arriba
 
 /* ══════════════════════ AUDIO ══════════════════════ */
 function playHoverSfx() {
@@ -3760,7 +3755,6 @@ function openModal(novel) {
   btnSample.style.display = sampleText ? '' : 'none';
 
   const isFree = novel.free && novel.free.es === 'Gratis';
-  const btnLabels = btnSample.querySelectorAll('.t-es, .t-en, .t-ja');
   const freeText  = { es: 'Leer', en: 'Read', ja: '読む' };
   const paidText  = { es: 'Leer muestra', en: 'Read sample', ja: '試し読み' };
   btnSample.querySelector('.t-es').textContent = isFree ? freeText.es : paidText.es;
@@ -3773,8 +3767,6 @@ function openModal(novel) {
   const readLabel = { es: 'leído', en: 'read', ja: '読了' };
   if (isRead) {
     btnSample.classList.add('read');
-    btnSample.dataset.readLabel = readLabel[L];
-    btnSample.dataset.baseLabel = btnSample.querySelector('.btn-label') ? '' : '';
     /* Insertar o actualizar etiqueta (leído) */
     let lbl = btnSample.querySelector('.btn-sample-read-lbl');
     if (!lbl) {
