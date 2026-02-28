@@ -952,6 +952,68 @@ nav {
   transition: background 0.2s, color 0.2s;
 }
 #illus-viewer-nav button:hover { background: rgba(255,255,255,0.14); color: #fff; }
+/* ════════════════════ ILLUSTRADOR MODALS ════════════════════ */
+.ilust-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.88);
+  z-index: 3500;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+.ilust-overlay.open { display: flex; }
+.ilust-box {
+  background: #0f0f0f;
+  border: 1px solid rgba(255,255,255,0.2);
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 2.5rem 2.5rem 2rem;
+  position: relative;
+}
+.ilust-box::-webkit-scrollbar { width: 3px; }
+.ilust-box::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); }
+.ilust-title {
+  font-size: 1.3rem;
+  font-style: italic;
+  margin-bottom: 1.6rem;
+  color: rgba(255,255,255,0.85);
+}
+.ilust-link-row {
+  margin-bottom: 1.2rem;
+}
+.ilust-link-row a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.1rem 0.5rem 0.9rem;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.22);
+  border-left: 3px solid rgba(255,255,255,0.55);
+  color: rgba(255,255,255,0.6);
+  font-family: 'Klee One', serif;
+  font-size: 0.82rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 0.22s, color 0.22s, background 0.22s;
+}
+.ilust-link-row a:hover {
+  border-color: rgba(255,255,255,0.75);
+  border-left-color: #fff;
+  color: #fff;
+  background: rgba(255,255,255,0.04);
+}
+.ilust-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 0.75rem;
+}
+
 /* ════════════════════ HAMBURGER BUTTON ════════════════════ */
 #menu-toggle {
   display: none;
@@ -3464,21 +3526,36 @@ const COLLAB_TIPS = {
 const COLLAB_LINKS = {
   actor:      [null,'https://lit.link/ennbunnkata_scenario','https://lit.link/iiixsally','https://ikedoyuki.wixsite.com/voice','https://lit.link/nanairoseika','https://lit.link/df7ce0b1-696a-4514-bbe3-a56041b14ac7','https://lit.link/hanamori1015', null, null],
   compositor: ['https://x.com/nanashigothic','https://x.com/takmfkk','https://www.youtube.com/channel/UC-X1eNg2tYeK5ONL6C3W6wg'],
-  ilustrador: [null, null, null,'https://www.foriio.com/ranaya']
+  ilustrador: [null, null, null, null]
 };
+
+// Illustrador modals: index 1 = ilustrador_2, index 3 = ilustrador_4
+const ILUST_MODAL_INDICES = { ilustrador: { 2: 'ilust2-overlay', 4: 'ilust4-overlay' } };
 
 function buildCollabGrid(id, prefix, count) {
   const c = document.getElementById(id);
   for (let i = 1; i <= count; i++) {
     const links = COLLAB_LINKS[prefix];
-    const href = links && links[i-1] != null ? links[i-1] : null;
+    const modalMap = ILUST_MODAL_INDICES[prefix];
+    const modalOverlayId = modalMap && modalMap[i] ? modalMap[i] : null;
+    const href = (!modalOverlayId) && links && links[i-1] != null ? links[i-1] : null;
+
     const item = document.createElement(href !== null ? 'a' : 'div');
-    item.className = 'collab-item' + (href !== null ? ' hov-sfx' : '');
+    item.className = 'collab-item hov-sfx';
     if (href !== null) { item.href = href; item.target = '_blank'; }
-    else {
+    else if (modalOverlayId) {
+      item.style.cursor = 'pointer';
+      item.addEventListener('click', () => {
+        const prefixMap = { 'ilust2-overlay': 'ilustrador_2', 'ilust4-overlay': 'ilustrador_4' };
+        buildIlustModal(modalOverlayId, prefixMap[modalOverlayId]);
+        document.getElementById(modalOverlayId).classList.add('open');
+        document.body.style.overflow = 'hidden';
+      });
+    } else {
       item.style.cursor = 'default';
       item.addEventListener('click', e => e.preventDefault());
     }
+
     const img = document.createElement('img');
     img.src = `${prefix}_${i}.jpg`;
     img.alt = `${prefix} ${i}`;
@@ -3500,6 +3577,66 @@ function buildCollabGrid(id, prefix, count) {
     c.appendChild(item);
   }
 }
+
+/* ══ Ilustrador modals grid builders — auto-detect images ══ */
+function buildIlustModal(overlayId, prefix) {
+  const overlay = document.getElementById(overlayId);
+  const grid = overlay.querySelector('.ilust-grid');
+  if (grid.hasChildNodes()) return; // ya construido
+
+  const loadedImgs = [];
+
+  function tryLoad(i) {
+    return new Promise(resolve => {
+      const img = new Image();
+      img.onload  = () => resolve(true);
+      img.onerror = () => resolve(false);
+      img.src = `${prefix}_${i}.jpg`;
+    });
+  }
+
+  async function discover() {
+    let i = 1;
+    while (true) {
+      const exists = await tryLoad(i);
+      if (!exists) break;
+      loadedImgs.push(`${prefix}_${i}.jpg`);
+      i++;
+    }
+
+    loadedImgs.forEach((src, idx) => {
+      const thumb = document.createElement('div');
+      thumb.className = 'illus-thumb hov-sfx';
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = src;
+      img.loading = 'lazy';
+      thumb.appendChild(img);
+      thumb.addEventListener('click', () => openIllusViewerCustom(idx, [...loadedImgs]));
+      grid.appendChild(thumb);
+    });
+
+    if (loadedImgs.length === 0) {
+      grid.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-style:italic;font-size:0.85rem;">— Sin imágenes —</p>';
+    }
+  }
+
+  discover();
+}
+
+let illusCustomImages = [];
+function openIllusViewerCustom(index, images) {
+  illusCustomImages = images;
+  illusViewerIndex = index;
+  document.getElementById('illus-viewer-img').src = images[index];
+  document.getElementById('illus-viewer').classList.add('open');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Los modales se construyen la primera vez que se abren (lazy)
+});
+
+// Patch illusViewerPrev/Next to use custom images if active — consolidado arriba
 
 /* ══════════════════════ AUDIO ══════════════════════ */
 function playHoverSfx() {
@@ -3950,42 +4087,35 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* ══════════════════════ ILLUSTRATIONS MODAL ══════════════════════ */
-const ILLUS_IMAGES = [
-  'dibujo_1.jpg',
-  'dibujo_2.jpg',
-  'dibujo_3.jpg',
-  'dibujo_4.jpg',
-  'dibujo_5.jpg',
-  'dibujo_6.jpg',
-  'dibujo_7.jpg',
-  'dibujo_8.jpg',
-  'dibujo_9.jpg',
-  'dibujo_10.jpg',
-  'dibujo_11.jpg',
-  'dibujo_12.jpg',
-  'dibujo_13.jpg',
-  'dibujo_14.jpg',
-  'dibujo_15.jpg',
-  'dibujo_16.jpg',
-  'dibujo_17.jpg',
-  'dibujo_18.jpg',
-  'dibujo_19.jpg',
-  'dibujo_20.jpg',
-  'dibujo_21.jpg',
-  'dibujo_22.jpg',
-  'dibujo_23.jpg',
-  'dibujo_24.jpg',
-  'dibujo_25.jpg',
-  'dibujo_26.jpg',
-  'dibujo_27.jpg',
-  'dibujo_28.jpg',
-];
-
+// Array de dibujos: se rellena automáticamente al abrir el modal
+let ILLUS_IMAGES = [];
 let illusViewerIndex = 0;
 
-function openIllusModal() {
+function probeImage(src) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload  = () => resolve(true);
+    img.onerror = () => resolve(false);
+    img.src = src;
+  });
+}
+
+async function discoverDibujos() {
+  const found = [];
+  let i = 1;
+  while (true) {
+    const exists = await probeImage(`dibujo_${i}.jpg`);
+    if (!exists) break;
+    found.push(`dibujo_${i}.jpg`);
+    i++;
+  }
+  return found;
+}
+
+async function openIllusModal() {
   const grid = document.getElementById('illus-grid');
   if (!grid.hasChildNodes()) {
+    ILLUS_IMAGES = await discoverDibujos();
     ILLUS_IMAGES.forEach((src, i) => {
       const thumb = document.createElement('div');
       thumb.className = 'illus-thumb hov-sfx';
@@ -3997,6 +4127,9 @@ function openIllusModal() {
       thumb.addEventListener('click', () => openIllusViewer(i));
       grid.appendChild(thumb);
     });
+    if (ILLUS_IMAGES.length === 0) {
+      grid.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-style:italic;font-size:0.85rem;">— Sin imágenes —</p>';
+    }
   }
   document.getElementById('illus-overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -4013,6 +4146,7 @@ function illusOverlayClick(e) {
 }
 
 function openIllusViewer(index) {
+  illusCustomImages = [];
   illusViewerIndex = index;
   document.getElementById('illus-viewer-img').src = ILLUS_IMAGES[index];
   document.getElementById('illus-viewer').classList.add('open');
@@ -4020,16 +4154,19 @@ function openIllusViewer(index) {
 
 function closeIllusViewer() {
   document.getElementById('illus-viewer').classList.remove('open');
+  illusCustomImages = [];
 }
 
 function illusViewerPrev() {
-  illusViewerIndex = (illusViewerIndex - 1 + ILLUS_IMAGES.length) % ILLUS_IMAGES.length;
-  document.getElementById('illus-viewer-img').src = ILLUS_IMAGES[illusViewerIndex];
+  const imgs = illusCustomImages.length ? illusCustomImages : ILLUS_IMAGES;
+  illusViewerIndex = (illusViewerIndex - 1 + imgs.length) % imgs.length;
+  document.getElementById('illus-viewer-img').src = imgs[illusViewerIndex];
 }
 
 function illusViewerNext() {
-  illusViewerIndex = (illusViewerIndex + 1) % ILLUS_IMAGES.length;
-  document.getElementById('illus-viewer-img').src = ILLUS_IMAGES[illusViewerIndex];
+  const imgs = illusCustomImages.length ? illusCustomImages : ILLUS_IMAGES;
+  illusViewerIndex = (illusViewerIndex + 1) % imgs.length;
+  document.getElementById('illus-viewer-img').src = imgs[illusViewerIndex];
 }
 
 document.addEventListener('keydown', e => {
@@ -4205,5 +4342,38 @@ function closeSidebar() {
     </div>
   </div>
 </div>
+<!-- ════════ ILUSTRADOR 2 MODAL ════════ -->
+<div id="ilust2-overlay" class="ilust-overlay" onclick="if(event.target===this){this.classList.remove('open');document.body.style.overflow=''}">
+  <div class="ilust-box">
+    <span class="modal-close" onclick="document.getElementById('ilust2-overlay').classList.remove('open');document.body.style.overflow=''">✕</span>
+    <div class="ilust-title">
+      <span class="t-es">Ilustrador 2 — Dibujos</span>
+      <span class="t-en">Illustrator 2 — Drawings</span>
+      <span class="t-ja">イラストレーター 2 — イラスト</span>
+    </div>
+    <div class="ilust-grid"></div>
+  </div>
+</div>
+
+<!-- ════════ ILUSTRADOR 4 MODAL ════════ -->
+<div id="ilust4-overlay" class="ilust-overlay" onclick="if(event.target===this){this.classList.remove('open');document.body.style.overflow=''}">
+  <div class="ilust-box">
+    <span class="modal-close" onclick="document.getElementById('ilust4-overlay').classList.remove('open');document.body.style.overflow=''">✕</span>
+    <div class="ilust-title">
+      <span class="t-es">Ranaya — Dibujos</span>
+      <span class="t-en">Ranaya — Drawings</span>
+      <span class="t-ja">らなや — イラスト</span>
+    </div>
+    <div class="ilust-link-row">
+      <a href="https://www.foriio.com/ranaya" target="_blank">
+        <span class="t-es">Página de Ranaya ↗</span>
+        <span class="t-en">Ranaya's Page ↗</span>
+        <span class="t-ja">らなやのページ ↗</span>
+      </a>
+    </div>
+    <div class="ilust-grid"></div>
+  </div>
+</div>
+
 </body>
 </html>
