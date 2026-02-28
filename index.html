@@ -4231,6 +4231,11 @@ const ACL_DATA = {
     en: { title: 'Fan-merch notice',      text: 'I allow readers to create their own products inspired by the work, or to sell fan-merch on a small scale, as long as they are original creations (not direct reproductions of exclusive material from the novels) and the original work they come from is credited.' },
     ja: { title: 'ファングッズについて',    text: '読者が作品にインスパイアされた独自の創作物を制作したり、小規模なファングッズを販売することを許可します。ただし、オリジナルの創作物であること（小説の独占素材の直接複製でないこと）、および元の作品のクレジットを明記することを条件とします。' }
   },
+  narracion: {
+    es: { title: 'Aviso de narración o reacción', text: 'Doy permiso para narrar o reaccionar a mis historias en plataformas de vídeo (YouTube, Twitch, etc.); en especial, no hay problema con las novelas gratis. Sin embargo, prohíbo la venta de estas narraciones como audiolibros o productos independientes. La intención es compartir la experiencia, no suplantar la obra original. Siempre podéis contactar conmigo para llegar a un acuerdo.' },
+    en: { title: 'Narration or reaction notice', text: 'I give permission to narrate or react to my stories on video platforms (YouTube, Twitch, etc.); especially, there is no problem with the free novels. However, I prohibit the sale of these narrations as audiobooks or standalone products. The intention is to share the experience, not to replace the original work. You are always welcome to contact me to reach an agreement.' },
+    ja: { title: '朗読・リアクション動画について', text: '動画プラットフォーム（YouTube、Twitchなど）での朗読やリアクション動画の制作を許可します。特に無料小説については問題ありません。ただし、これらの朗読をオーディオブックや独立した商品として販売することは禁じます。目的は体験を共有することであり、原作の代替物を作ることではありません。合意に達するためにいつでもご連絡ください。' }
+  },
   colabs: {
     es: { title: 'Sobre colaboraciones',  text: 'Quien quiera apoyar la novela con sus dibujos, música o cualquier cosa, siempre es bienvenido mientras sea voluntario.' },
     en: { title: 'About collaborations',  text: 'Anyone who wants to support the novel with their drawings, music, or anything else is always welcome, as long as it is voluntary.' },
@@ -4355,6 +4360,15 @@ function closeSidebar() {
           <span class="t-es">Aviso de Fan-merch</span>
           <span class="t-en">Fan-merch notice</span>
           <span class="t-ja">ファングッズについて</span>
+        </span>
+        <span class="acl-arrow">›</span>
+      </button>
+      <button class="acl-item hov-sfx" onclick="openAclaracion('narracion')">
+        <span class="acl-icon">i</span>
+        <span class="acl-label">
+          <span class="t-es">Aviso de narración o reacción</span>
+          <span class="t-en">Narration or reaction notice</span>
+          <span class="t-ja">朗読・リアクション動画について</span>
         </span>
         <span class="acl-arrow">›</span>
       </button>
