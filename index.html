@@ -634,8 +634,10 @@ nav {
   text-decoration: none; display: flex; align-items: center; justify-content: center;
   color: rgba(255,255,255,0.16); font-size: 0.62rem; letter-spacing: 0.08em;
   position: relative;
+  user-select: none; -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
-.collab-item img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.6; transition: opacity 0.2s; will-change: opacity; transform: translateZ(0); }
+.collab-item img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.6; transition: opacity 0.2s; will-change: opacity; transform: translateZ(0); pointer-events: none; }
 .collab-item:hover { border-color: rgba(255,255,255,0.8); }
 .collab-item:hover img { opacity: 1; }
 
@@ -3604,54 +3606,53 @@ function buildCollabGrid(id, prefix, count) {
       showTip(e, tip);
     });
     item.addEventListener('mouseleave', () => { stopVoz(audioId); hideTip(); });
+
+    // Long press en móvil: mostrar tooltip sin menú contextual
+    let _lpTimer = null;
+    item.addEventListener('touchstart', e => {
+      const touch = e.touches[0];
+      _lpTimer = setTimeout(() => {
+        const tips = COLLAB_TIPS[prefix];
+        const tip = tips && tips[i-1] ? tips[i-1][currentLang] : `${prefix} ${i}`;
+        showTip({ clientX: touch.clientX, clientY: touch.clientY }, tip);
+        playVoz(audioId);
+      }, 500);
+    }, { passive: true });
+    item.addEventListener('touchend',    () => { clearTimeout(_lpTimer); });
+    item.addEventListener('touchmove',   () => { clearTimeout(_lpTimer); });
+    item.addEventListener('touchcancel', () => { clearTimeout(_lpTimer); hideTip(); stopVoz(audioId); });
+    item.addEventListener('contextmenu', e => e.preventDefault());
+
     c.appendChild(item);
   }
 }
 
-/* ══ Ilustrador modals grid builders — auto-detect images ══ */
+/* ══ Ilustrador modals grid builders — fixed arrays ══ */
+const ILUST_COUNTS = { 'ilust2-overlay': 6, 'ilust4-overlay': 4 };
+
 function buildIlustModal(overlayId, prefix) {
   const overlay = document.getElementById(overlayId);
   const grid = overlay.querySelector('.ilust-grid');
   if (grid.hasChildNodes()) return; // ya construido
 
-  const loadedImgs = [];
+  const count = ILUST_COUNTS[overlayId] || 0;
+  const imgs = Array.from({length: count}, (_, i) => `${prefix}_${i + 1}.jpg`);
 
-  function tryLoad(i) {
-    return new Promise(resolve => {
-      const img = new Image();
-      img.onload  = () => resolve(true);
-      img.onerror = () => resolve(false);
-      img.src = `${prefix}_${i}.jpg`;
-    });
+  imgs.forEach((src, idx) => {
+    const thumb = document.createElement('div');
+    thumb.className = 'illus-thumb hov-sfx';
+    const img = document.createElement('img');
+    img.src = src;
+    img.alt = src;
+    img.loading = 'lazy';
+    thumb.appendChild(img);
+    thumb.addEventListener('click', () => openIllusViewerCustom(idx, [...imgs]));
+    grid.appendChild(thumb);
+  });
+
+  if (imgs.length === 0) {
+    grid.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-style:italic;font-size:0.85rem;">— Sin imágenes —</p>';
   }
-
-  async function discover() {
-    let i = 1;
-    while (true) {
-      const exists = await tryLoad(i);
-      if (!exists) break;
-      loadedImgs.push(`${prefix}_${i}.jpg`);
-      i++;
-    }
-
-    loadedImgs.forEach((src, idx) => {
-      const thumb = document.createElement('div');
-      thumb.className = 'illus-thumb hov-sfx';
-      const img = document.createElement('img');
-      img.src = src;
-      img.alt = src;
-      img.loading = 'lazy';
-      thumb.appendChild(img);
-      thumb.addEventListener('click', () => openIllusViewerCustom(idx, [...loadedImgs]));
-      grid.appendChild(thumb);
-    });
-
-    if (loadedImgs.length === 0) {
-      grid.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-style:italic;font-size:0.85rem;">— Sin imágenes —</p>';
-    }
-  }
-
-  discover();
 }
 
 let illusCustomImages = [];
@@ -4133,32 +4134,11 @@ document.addEventListener('DOMContentLoaded', () => {
 let ILLUS_IMAGES = [];
 let illusViewerIndex = 0;
 
-function probeImage(src) {
-  return new Promise(resolve => {
-    const img = new Image();
-    img.onload  = () => resolve(true);
-    img.onerror = () => resolve(false);
-    img.src = src;
-  });
-}
-
-async function discoverDibujos() {
-  const found = [];
-  let i = 1;
-  while (true) {
-    const exists = await probeImage(`dibujo_${i}.jpg`);
-    if (!exists) break;
-    found.push(`dibujo_${i}.jpg`);
-    i++;
-  }
-  return found;
-}
-
-async function openIllusModal() {
+function openIllusModal() {
   hideTip();
   const grid = document.getElementById('illus-grid');
   if (!grid.hasChildNodes()) {
-    ILLUS_IMAGES = await discoverDibujos();
+    ILLUS_IMAGES = Array.from({length: 28}, (_, i) => `dibujo_${i + 1}.jpg`);
     ILLUS_IMAGES.forEach((src, i) => {
       const thumb = document.createElement('div');
       thumb.className = 'illus-thumb hov-sfx';
