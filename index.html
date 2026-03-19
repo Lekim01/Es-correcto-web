@@ -498,6 +498,89 @@ nav {
 .gc-2-3 { grid-column:2; grid-row:3; }
 .gc-3-3 { grid-column:3; grid-row:3; }
 
+/* ════════════════════ ORDEN DE LECTURA ════════════════════ */
+#orden-lectura-wrapper {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  z-index: 10;
+  width: 260px;
+}
+
+#orden-lectura-btn {
+  background: rgba(8,8,8,0.88);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-left: 3px solid rgba(255,255,255,0.55);
+  color: rgba(255,255,255,0.75);
+  font-family: 'Klee One', serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  padding: 0.45rem 0.85rem;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
+  white-space: nowrap;
+  backdrop-filter: blur(6px);
+  user-select: none;
+  display: block;
+  width: auto;
+}
+#orden-lectura-btn:hover,
+#orden-lectura-btn.active {
+  border-color: rgba(255,255,255,0.9);
+  border-left-color: rgba(255,255,255,0.9);
+  background: rgba(255,255,255,0.07);
+  color: #fff;
+}
+
+#orden-lectura-panel {
+  display: none;
+  background: rgba(8,8,8,0.94);
+  border: 1px solid rgba(255,255,255,0.2);
+  margin-top: 0.45rem;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-left: 3px solid rgba(255,255,255,0.5);
+  padding: 0.85rem 1.05rem;
+  width: 260px;
+  backdrop-filter: blur(8px);
+  animation: ordenFadeIn 0.22s ease;
+}
+#orden-lectura-panel.visible {
+  display: block;
+}
+@keyframes ordenFadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+#orden-lectura-panel p {
+  font-size: 0.82rem;
+  line-height: 1.65;
+  color: rgba(255,255,255,0.8);
+  font-style: italic;
+  margin-bottom: 0.6rem;
+}
+#orden-lectura-panel p:last-child { margin-bottom: 0; }
+#orden-lectura-panel .orden-item {
+  font-size: 0.79rem;
+  line-height: 1.6;
+  color: rgba(255,255,255,0.72);
+  padding-left: 0.5rem;
+  border-left: 2px solid rgba(255,255,255,0.2);
+  margin-bottom: 0.55rem;
+}
+#orden-lectura-panel .orden-item:last-child { margin-bottom: 0; }
+#orden-lectura-panel .orden-label {
+  color: rgba(255,255,255,0.55);
+  font-size: 0.73rem;
+  letter-spacing: 0.05em;
+  display: block;
+  margin-bottom: 0.15rem;
+  font-style: normal;
+}
+
 /* ════════════════════ MODAL ════════════════════ */
 #modal-overlay {
   position: fixed;
@@ -1445,6 +1528,69 @@ nav {
   <section id="novelas">
 
     <!-- ══ AVISOS movidos al sidebar ══ -->
+
+    <!-- ══ ORDEN DE LECTURA ══ -->
+    <div id="orden-lectura-wrapper">
+      <button id="orden-lectura-btn" onclick="toggleOrdenLectura()" class="hov-sfx">
+        <span class="t-es">Orden de lectura</span>
+        <span class="t-en">Reading order</span>
+        <span class="t-ja">読む順番</span>
+      </button>
+      <div id="orden-lectura-panel">
+
+        <!-- ES -->
+        <div class="t-es">
+          <p>No hay un orden; pero si eres indeciso, puedes elegir entre estos:</p>
+          <div class="orden-item">
+            <span class="orden-label">Si eres paciente para leer historias largas:</span>
+            Rojo, blanco, azul, naranja, morado, verde y gris. <em style="color:rgba(255,255,255,0.4);font-size:0.73rem;">(Orden en que fueron escritas)</em>
+          </div>
+          <div class="orden-item">
+            <span class="orden-label">Si prefieres algo más rápido:</span>
+            Azul, morado, naranja, verde, blanco, rojo, gris.
+          </div>
+          <div class="orden-item">
+            <span class="orden-label">Si empiezas por lo gratis:</span>
+            Morado, naranja, blanco, verde, gris, azul, rojo.
+          </div>
+        </div>
+
+        <!-- EN -->
+        <div class="t-en">
+          <p>There is no set order; but if you're undecided, you can choose from these:</p>
+          <div class="orden-item">
+            <span class="orden-label">If you're patient for long stories:</span>
+            Red, white, blue, orange, purple, green and grey. <em style="color:rgba(255,255,255,0.4);font-size:0.73rem;">(Order they were written)</em>
+          </div>
+          <div class="orden-item">
+            <span class="orden-label">If you prefer something shorter:</span>
+            Blue, purple, orange, green, white, red, grey.
+          </div>
+          <div class="orden-item">
+            <span class="orden-label">If you start with the free ones:</span>
+            Purple, orange, white, green, grey, blue, red.
+          </div>
+        </div>
+
+        <!-- JA -->
+        <div class="t-ja">
+          <p>順番は決まっていませんが、迷っている方はこちらを参考にどうぞ：</p>
+          <div class="orden-item">
+            <span class="orden-label">長い話をじっくり読みたい方：</span>
+            赤、白、青、橙、紫、緑、灰。<em style="color:rgba(255,255,255,0.4);font-size:0.73rem;">（執筆順）</em>
+          </div>
+          <div class="orden-item">
+            <span class="orden-label">短めのものから始めたい方：</span>
+            青、紫、橙、緑、白、赤、灰。
+          </div>
+          <div class="orden-item">
+            <span class="orden-label">無料作品から始めたい方：</span>
+            紫、橙、白、緑、灰、青、赤。
+          </div>
+        </div>
+
+      </div>
+    </div>
 
     <div class="grid-wrapper">
       <div class="grid-container" id="gridContainer">
@@ -4252,6 +4398,14 @@ function openAclaracion(key) {
 function closeAclaracion() {
   document.getElementById('aclaraciones-list').style.display   = 'block';
   document.getElementById('aclaraciones-detail').style.display = 'none';
+}
+
+/* ══════════════════════ ORDEN DE LECTURA ══════════════════════ */
+function toggleOrdenLectura() {
+  const panel = document.getElementById('orden-lectura-panel');
+  const btn   = document.getElementById('orden-lectura-btn');
+  const visible = panel.classList.toggle('visible');
+  btn.classList.toggle('active', visible);
 }
 
 /* ══════════════════════ SIDEBAR TOGGLE (MÓVIL) ══════════════════════ */
