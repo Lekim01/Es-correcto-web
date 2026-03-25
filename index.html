@@ -1413,7 +1413,7 @@ nav {
 <audio id="voz-5"  src="voz-5.mp3"  preload="none"></audio>
 <audio id="voz-6"  src="voz-6.mp3"  preload="none"></audio>
 <audio id="voz-7"  src="voz-7.mp3"  preload="none"></audio>
-<audio id="voz-8"  src="voz-8.mp3"  preload="none"></audio>
+<audio id="voz-8"  src="voz-14.mp3"  preload="none"></audio>
 <audio id="credit-actor-1" src="voz-10.mp3" preload="none"></audio>
 <audio id="credit-actor-2" src="voz-2.mp3" preload="none"></audio>
 <audio id="credit-actor-3" src="voz-8.mp3" preload="none"></audio>
@@ -1423,9 +1423,11 @@ nav {
 <audio id="credit-actor-7" src="voz-3.mp3" preload="none"></audio>
 <audio id="credit-actor-8" src="voz-11.mp3" preload="none"></audio>
 <audio id="credit-actor-9" src="voz-12.mp3" preload="none"></audio>
+<audio id="credit-actor-10" src="voz-6.mp3" preload="none"></audio>
 <audio id="credit-compositor-1" src="compositor_1.mp3" preload="none"></audio>
 <audio id="credit-compositor-2" src="compositor_2.mp3" preload="none"></audio>
 <audio id="credit-compositor-3" src="compositor_3.mp3" preload="none"></audio>
+<audio id="credit-compositor-4" src="compositor_4.mp3" preload="none"></audio>
 <audio id="credit-ilustrador-1" src="ilustrador_1.mp3" preload="none"></audio>
 <audio id="credit-ilustrador-2" src="ilustrador_2.mp3" preload="none"></audio>
 <audio id="credit-ilustrador-3" src="ilustrador_3.mp3" preload="none"></audio>
@@ -2903,16 +2905,18 @@ Without a doubt, I stretched my hand toward the light, with longing, offering my
   },
   {
     gridClass: 'gc-3-1', outline: 'gray', vozId: 'voz-6',
-    cover: 'pregunta.jpg',
-    title:  { es:'¿Es correcto...?', en:'Is it correct...?', ja:'???' },
-    slogan: { es:'Próximamente', en:'Coming soon', ja:'近日公開' },
-    free:   { es:'???', en:'???', ja:'???' },
-    pages:  { es:'???', en:'???', ja:'???' },
-    genres: { es:'???', en:'???', ja:'???' },
-    synopsis:{ es:'Próximamente.', en:'Coming soon.', ja:'近日公開。' },
+    cover: 'portada_sueño.jpg',
+    title:  { es:'¿Es correcto el soñar?', en:'Is it right to dream?', ja:'夢を見るのは正しいか？' },
+    slogan: { es:'Levantándome con determinación, empecé a soñar.', en:'Rising with determination, I began to dream.', ja:'決意を胸に立ち上がり、夢を見始めた。' },
+    free:   { es:'PAGO', en:'PAID', ja:'有料' },
+    pages:  { es:'2 PÁGINAS', en:'2 PAGES', ja:'2ページ' },
+    genres: { es:'Misterio y fantasía.', en:'Mystery and fantasy.', ja:'ミステリーとファンタジー。' },
+    synopsis:{ es:'Una mujer, determinada a viajar junto a una muchacha, empieza a soñar.', en:'A woman, determined to travel alongside a girl, begins to dream.', ja:'ある少女とともに旅をしようと決意した女性が、夢を見始める。' },
     sample: { es: '', en: '', ja: '' },
+    sampleUnavailable: true,
     youtube: '',
-    actor: { nombre: 'Pendiente.', url: '#', color: 'rgba(195,195,195,0.95)' },
+    actor: { nombre: { es:'Tooru', en:'Tooru', ja:'Tooru' }, url: 'https://lit.link/toooru241', color: 'rgba(195,195,195,0.95)' },
+    compositor: { nombre: { es:'ポケットサウンド', en:'ポケットサウンド', ja:'ポケットサウンド' }, url: 'https://x.com/pocketse', color: 'rgba(195,195,195,0.95)' },
     link: { es:'#', en:'#', ja:'#' }
   },
   {
@@ -3494,7 +3498,7 @@ I remembered the pending questions:
     link: { es:'https://amazon.com/', en:'https://amazon.com/', ja:'https://amazon.co.jp/' }
   },
   {
-    gridClass: 'gc-1-1', outline: 'rainbow', vozId: 'voz-8', hidden: true,
+    gridClass: 'gc-1-1', outline: 'rainbow', vozId: 'voz-8',
     cover: 'pregunta.jpg',
     title:  { es:'Próximamente.', en:'Coming Soon.', ja:'近日公開。' },
     slogan: { es:'Próximamente.', en:'Coming Soon.', ja:'近日公開。' },
@@ -3657,6 +3661,11 @@ const COLLAB_TIPS = {
       es: 'Rirumu también fue la primera en aparecer en un tráiler, en el papel de Eima. La primera vez que la escuché, la imaginé poniendo voces a un juego de cartas. Sakichi, Hotaru y Rirumu estaban fuera del mundo de actrices de voz, pero a día pienso que nadie pensaría que son novatas.',
       en: 'Rirumu was also the first to appear in a trailer, in the role of Eima. The first time I heard her voice, I imagined her doing voices for a card game. Sakichi, Hotaru, and Rirumu were outside the world of voice acting, but nowadays I think no one would guess they\'re novices.',
       ja: 'りるむ様もエイマ役でPVに初登場しましたね。初めて彼女の声を聞いた時は、カードゲームの声優さんを想像していました。さきち様、ほたる様、りるむ様は声優界の外の世界でしたが、今となっては初心者だとは誰も思わないと思います。'
+    },
+    {
+      es: 'Tooru puso voz a la protagonista de ¿Es correcto soñar?, es quien menos información le proporcioné. Su voz puede que sea más bonita de lo que preveí, pero no desentona con el personaje.',
+      en: 'Tooru voiced the protagonist of Is it right to dream?; she is the one I gave the least information to. Her voice may be prettier than I expected, but it does not clash with the character.',
+      ja: 'Tooruは「夢を見るのは正しいか？」の主人公の声を担当しました。私が最も情報を少なく伝えた方です。予想より声が綺麗かもしれませんが、キャラクターとも違和感なく合っています。'
     }
   ],
   compositor: [
@@ -3674,6 +3683,11 @@ const COLLAB_TIPS = {
       es: 'Un compositor de lo más misterioso que encontré tras buscar entre miles de músicas. Subió hace años unas pocas músicas libre de uso y desapareció; pero su música, aunque simple, me atrapó.',
       en: 'One of the most mysterious composers I found after searching through thousands of tracks. Years ago they uploaded a few royalty-free pieces and then vanished; but their music, though simple, captivated me.',
       ja: '何千もの楽曲を探した末に見つけた、最も謎めいた作曲家の一人です。数年前にいくつかのフリー楽曲をアップロードして姿を消しました。シンプルながら、その音楽に心を掴まれました。'
+    },
+    {
+      es: 'ポケットサウンド.',
+      en: 'ポケットサウンド.',
+      ja: 'ポケットサウンド.'
     }
   ],
   ilustrador: [
@@ -3701,8 +3715,8 @@ const COLLAB_TIPS = {
 };
 
 const COLLAB_LINKS = {
-  actor:      [null,'https://lit.link/ennbunnkata_scenario','https://lit.link/iiixsally','https://ikedoyuki.wixsite.com/voice','https://lit.link/nanairoseika','https://lit.link/df7ce0b1-696a-4514-bbe3-a56041b14ac7','https://lit.link/hanamori1015', null, null],
-  compositor: ['https://x.com/nanashigothic','https://x.com/takmfkk','https://www.youtube.com/channel/UC-X1eNg2tYeK5ONL6C3W6wg'],
+  actor:      [null,'https://lit.link/ennbunnkata_scenario','https://lit.link/iiixsally','https://ikedoyuki.wixsite.com/voice','https://lit.link/nanairoseika','https://lit.link/df7ce0b1-696a-4514-bbe3-a56041b14ac7','https://lit.link/hanamori1015', null, null, 'https://lit.link/toooru241'],
+  compositor: ['https://x.com/nanashigothic','https://x.com/takmfkk','https://www.youtube.com/channel/UC-X1eNg2tYeK5ONL6C3W6wg','https://x.com/pocketse'],
   ilustrador: [null, null, null, null]
 };
 
@@ -3898,14 +3912,27 @@ function openModal(novel) {
 
   const sampleText = novel.sample && novel.sample[L] ? novel.sample[L].trim() : '';
   const btnSample = document.getElementById('btn-read-sample');
-  btnSample.style.display = sampleText ? '' : 'none';
 
-  const isFree = novel.free && novel.free.es === 'Gratis';
-  const freeText  = { es: 'Leer', en: 'Read', ja: '読む' };
-  const paidText  = { es: 'Leer muestra', en: 'Read sample', ja: '試し読み' };
-  btnSample.querySelector('.t-es').textContent = isFree ? freeText.es : paidText.es;
-  btnSample.querySelector('.t-en').textContent = isFree ? freeText.en : paidText.en;
-  btnSample.querySelector('.t-ja').textContent = isFree ? freeText.ja : paidText.ja;
+  if (novel.sampleUnavailable) {
+    btnSample.style.display = '';
+    btnSample.style.opacity = '0.45';
+    btnSample.style.cursor = 'default';
+    btnSample.style.pointerEvents = 'none';
+    btnSample.querySelector('.t-es').textContent = 'Muestra no disponible';
+    btnSample.querySelector('.t-en').textContent = 'Sample not available';
+    btnSample.querySelector('.t-ja').textContent = '試し読み不可';
+  } else {
+    btnSample.style.display = sampleText ? '' : 'none';
+    btnSample.style.opacity = '';
+    btnSample.style.cursor = '';
+    btnSample.style.pointerEvents = '';
+    const isFree = novel.free && novel.free.es === 'Gratis';
+    const freeText  = { es: 'Leer', en: 'Read', ja: '読む' };
+    const paidText  = { es: 'Leer muestra', en: 'Read sample', ja: '試し読み' };
+    btnSample.querySelector('.t-es').textContent = isFree ? freeText.es : paidText.es;
+    btnSample.querySelector('.t-en').textContent = isFree ? freeText.en : paidText.en;
+    btnSample.querySelector('.t-ja').textContent = isFree ? freeText.ja : paidText.ja;
+  }
 
   /* Cargar estado leído desde localStorage */
   const readKey = 'sample-read:' + (novel.id || novel.title.es);
@@ -4261,8 +4288,8 @@ function goTo(id) {
 document.addEventListener('DOMContentLoaded', () => {
   const detectedLang = detectLang();
   buildDiamonds();
-  buildCollabGrid('voiceGrid',    'actor',      9);
-  buildCollabGrid('composerGrid', 'compositor', 3);
+  buildCollabGrid('voiceGrid',    'actor',      10);
+  buildCollabGrid('composerGrid', 'compositor', 4);
   buildCollabGrid('artistGrid',   'ilustrador', 4);
   setLang(detectedLang);
 });
