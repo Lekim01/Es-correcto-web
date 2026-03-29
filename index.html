@@ -1424,10 +1424,12 @@ nav {
 <audio id="credit-actor-8" src="voz-11.mp3" preload="none"></audio>
 <audio id="credit-actor-9" src="voz-12.mp3" preload="none"></audio>
 <audio id="credit-actor-10" src="voz-6.mp3" preload="none"></audio>
+<audio id="credit-actor-11" src="voz-1.mp3" preload="none"></audio>
 <audio id="credit-compositor-1" src="compositor_1.mp3" preload="none"></audio>
 <audio id="credit-compositor-2" src="compositor_2.mp3" preload="none"></audio>
 <audio id="credit-compositor-3" src="compositor_3.mp3" preload="none"></audio>
 <audio id="credit-compositor-4" src="compositor_4.mp3" preload="none"></audio>
+<audio id="credit-compositor-5" src="compositor_5.mp3" preload="none"></audio>
 <audio id="credit-ilustrador-1" src="ilustrador_1.mp3" preload="none"></audio>
 <audio id="credit-ilustrador-2" src="ilustrador_2.mp3" preload="none"></audio>
 <audio id="credit-ilustrador-3" src="ilustrador_3.mp3" preload="none"></audio>
@@ -1892,7 +1894,7 @@ const NOVELS = [
     gridClass: 'gc-1-2', outline: 'white', vozId: 'voz-1',
     cover: 'portada_infelicidad.jpg',
     title:  { es:'¿Es correcto la infelicidad?', en:'Is it right the unhappiness?', ja:'不幸は正しいか？' },
-    slogan: { es:'Lo que debe existir, está; lo que no, también.', en:'What must exist is there; what should not, is there.', ja:'存在するべきものは存在している、存在しないべきものも存在している。' },
+    slogan: { es:'Lo que debe existir está; lo que no, también.', en:'What must exist is there; what should not, is there.', ja:'存在するべきものは存在している、存在しないべきものも存在している。' },
     free:   { es:'Gratis', en:'Free', ja:'無料' },
     pages:  { es:'1 páginas', en:'1 pages', ja:'1ページ' },
     genres: { es:'Misterio, tragedia y fantasía.', en:'Mystery, tragedy, and fantasy.', ja:'ミステリー、悲劇、そしてファンタジー。' },
@@ -1900,7 +1902,7 @@ const NOVELS = [
     sample: {
       es: `Capítulo 0
 
-—Lo que debe existir, está; lo que no, también. —Con el antebrazo derecho se cubrió los ojos por la blanquecina luz del techo. Él descansaba en el sofá, apretando los dientes con una expresión agonizante. Tenía el pelo negro, una bata blanca arrugada, una camisa y unos tejanos negros.
+—Lo que debe existir está; lo que no, también. —Con el antebrazo derecho se cubrió los ojos por la blanquecina luz del techo. Él descansaba en el sofá, apretando los dientes con una expresión agonizante. Tenía el pelo negro, una bata blanca arrugada, una camisa y unos tejanos negros.
 —También estoy comenzando a preguntarme qué sucederá —confesó una joven de cabello negro que jadeaba. Utilizaba un sombrero de bruja y una camiseta negra holgada. Estaba de rodillas con una mano en el suelo y la otra apoyada en la pared.
 —Si queréis echaros para atrás, ya es tarde... —advirtió una mujer de pelo blanco; su flequillo le ocultaba los ojos y usaba un vestido blanco con detalles de distintos colores. Estaba en el suelo, pálida, con la cabeza y las manos aferradas a la pierna del varón.
 —A pesar de las advertencias y su tiempo limitado... —se quejó la del sombrero, cabizbaja.
@@ -1941,8 +1943,9 @@ const NOVELS = [
 「また私たちに微笑んでくれたらいいな…」と女性は願った。
 「もし我々が彼女の幸福を達成できたとしても」彼は手をロロックの手に触れるまで動かした「我々の結末は取るに足らないものだ。もううんざりだよ、ロロック、反応しない何かに…そしてここに存在を続けること」同じように疲れ果てて、疑いもなく、彼らは亡くなりました。`
     },
-    youtube: '',
-    actor: { nombre: 'Pendiente.', url: '#', color: 'rgba(255,255,255,0.92)' },
+    youtube: 'https://www.youtube.com/embed/f9UctIzOOoA',
+    actor: { nombre: { es:'Hakuhyō de po', en:'Hakuhyō de po', ja:'薄氷でぽ' }, url: 'https://x.com/depo_penguin', color: 'rgba(255,255,255,0.92)' },
+    compositor: { nombre: { es:'Amacha', en:'Amacha', ja:'甘茶' }, url: 'http://nostalgiamusic.info/index.html', color: 'rgba(255,255,255,0.92)' },
     link: { es:'#', en:'#', ja:'#' }
   },
   {
@@ -2914,7 +2917,7 @@ Without a doubt, I stretched my hand toward the light, with longing, offering my
     synopsis:{ es:'Una mujer, determinada a viajar junto a una muchacha, empieza a soñar.', en:'A woman, determined to travel alongside a girl, begins to dream.', ja:'ある少女とともに旅をしようと決意した女性が、夢を見始める。' },
     sample: { es: '', en: '', ja: '' },
     sampleUnavailable: true,
-    youtube: '',
+    youtube: 'https://www.youtube.com/embed/LQvMjMMwEpw',
     actor: { nombre: { es:'Tooru', en:'Tooru', ja:'Tooru' }, url: 'https://lit.link/toooru241', color: 'rgba(195,195,195,0.95)' },
     compositor: { nombre: { es:'ポケットサウンド', en:'ポケットサウンド', ja:'ポケットサウンド' }, url: 'https://x.com/pocketse', color: 'rgba(195,195,195,0.95)' },
     link: { es:'#', en:'#', ja:'#' }
@@ -3666,6 +3669,11 @@ const COLLAB_TIPS = {
       es: 'Tooru puso voz a la protagonista de ¿Es correcto soñar?, es quien menos información le proporcioné. Su voz puede que sea más bonita de lo que preveí, pero no desentona con el personaje.',
       en: 'Tooru voiced the protagonist of Is it right to dream?; she is the one I gave the least information to. Her voice may be prettier than I expected, but it does not clash with the character.',
       ja: 'Tooruは「夢を見るのは正しいか？」の主人公の声を担当しました。私が最も情報を少なく伝えた方です。予想より声が綺麗かもしれませんが、キャラクターとも違和感なく合っています。'
+    },
+    {
+      es: 'Hakuhyo hizo la voz de Tei. Cuando escuché su parte, sentí que sonaba algo chūnibyō, pero tiene una voz grave interesante.',
+      en: 'Hakuhyo voiced Tei. When I heard his part, I felt it sounded a bit chūnibyō, but he has an interesting deep voice.',
+      ja: '薄氷でぽはテイの声を担当しました。パートを聞いたとき、少し中二病っぽいと感じましたが、面白い低い声を持っています。'
     }
   ],
   compositor: [
@@ -3688,6 +3696,11 @@ const COLLAB_TIPS = {
       es: 'No he tenido la oportunidad de contactar con él porque requería de cuenta premium, así que no puedo decir mucho más allá de que va creando sonidos y música de libre uso.',
       en: 'I have not had the opportunity to contact him because it required a premium account, so I cannot say much beyond the fact that he keeps creating royalty-free sounds and music.',
       ja: 'プレミアムアカウントが必要だったため連絡を取る機会がなく、フリー素材の音楽やサウンドを作り続けているということ以上のことは、あまり言えません。'
+    },
+    {
+      es: 'Usé música de Amacha anteriormente, en el último tráiler de la trilogía (que oculté porque era un tráiler largo de 40 seg, y le hice remake rápido en el tráiler de ¿Es correcto buscar la verdad?). No conozco al compositor, no parece tener redes, así que no sé su paradero; mucha de su música era interesante.',
+      en: 'I used Amacha\'s music before, in the last trailer of the trilogy (which I hid because it was a long 40-second trailer, and I quickly remade it for the Is it right to seek the truth? trailer). I do not know the composer, they do not seem to have any social media, so I do not know their whereabouts; much of their music was interesting.',
+      ja: '以前、三部作の最後のトレーラー（40秒の長いトレーラーだったので非公開にして、「真実を探すのは正しいか？」のトレーラーで急いでリメイクしました）で甘茶の音楽を使いました。作曲家のことはよく知らず、SNSもないようで、どこにいるのかわかりません。でも曲の多くはとても興味深かったです。'
     }
   ],
   ilustrador: [
@@ -3715,8 +3728,8 @@ const COLLAB_TIPS = {
 };
 
 const COLLAB_LINKS = {
-  actor:      [null,'https://lit.link/ennbunnkata_scenario','https://lit.link/iiixsally','https://ikedoyuki.wixsite.com/voice','https://lit.link/nanairoseika','https://lit.link/df7ce0b1-696a-4514-bbe3-a56041b14ac7','https://lit.link/hanamori1015', null, null, 'https://lit.link/toooru241'],
-  compositor: ['https://x.com/nanashigothic','https://x.com/takmfkk','https://www.youtube.com/channel/UC-X1eNg2tYeK5ONL6C3W6wg','https://x.com/pocketse'],
+  actor:      [null,'https://lit.link/ennbunnkata_scenario','https://lit.link/iiixsally','https://ikedoyuki.wixsite.com/voice','https://lit.link/nanairoseika','https://lit.link/df7ce0b1-696a-4514-bbe3-a56041b14ac7','https://lit.link/hanamori1015', null, null, 'https://lit.link/toooru241', 'https://x.com/depo_penguin'],
+  compositor: ['https://x.com/nanashigothic','https://x.com/takmfkk','https://www.youtube.com/channel/UC-X1eNg2tYeK5ONL6C3W6wg','https://x.com/pocketse', 'http://nostalgiamusic.info/index.html'],
   ilustrador: [null, null, null, null]
 };
 
@@ -4288,8 +4301,8 @@ function goTo(id) {
 document.addEventListener('DOMContentLoaded', () => {
   const detectedLang = detectLang();
   buildDiamonds();
-  buildCollabGrid('voiceGrid',    'actor',      10);
-  buildCollabGrid('composerGrid', 'compositor', 4);
+  buildCollabGrid('voiceGrid',    'actor',      11);
+  buildCollabGrid('composerGrid', 'compositor', 5);
   buildCollabGrid('artistGrid',   'ilustrador', 4);
   setLang(detectedLang);
 });
